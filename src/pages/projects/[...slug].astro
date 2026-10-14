@@ -1,0 +1,133 @@
+---
+import { getCollection, render } from "astro:content";
+import Base from "../../layouts/Base.astro";
+
+export async function getStaticPaths() {
+  const projects = await getCollection("projects");
+  return projects.map((project) => ({
+    params: { slug: project.id },
+    props: { project },
+  }));
+}
+
+const { project } = Astro.props;
+const { Content } = await render(project);
+const repo = project.data.evidence.find((e) => e.kind === "repo");
+---
+
+<Base title={`${project.data.title} — Leslie Angu`} description={project.data.summary}>
+  <article class="case-study">
+    <div class="container">
+      <p class="kicker">
+        <a href="/#projects">← All Case Studies</a>
+      </p>
+      <p class="kicker">
+        {
+          project.data.order === 1 ? "Flagship · " : ""
+        }
+        Case Study {String(project.data.order).padStart(2, "0")}
+      </p>
+      <h1>{project.data.title}</h1>
+      <p class="summary">{project.data.summary}</p>
+      <ul class="stack" role="list">
+        {project.data.stack.map((s) => <li>{s}</li>)}
+      </ul>
+
+      <div class="prose">
+        <Content />
+      </div>
+
+      <aside class="evidence-box">
+        <p class="kicker">Evidence</p>
+        <ul role="list">
+          {
+            project.data.evidence.map((e) => (
+              <li>
+                {e.pending ? (
+                  <span class="pending">{e.label} — coming soon</span>
+                ) : (
+                  <a href={e.url} rel="noopener">
+                    {e.label}
+                  </a>
+                )}
+              </li>
+            ))
+          }
+        </ul>
+      </aside>
+
+      {
+        repo && (
+          <p class="footnote">
+            Want the code? The public repo is linked under Evidence.
+          </p>
+        )
+      }
+    </div>
+  </article>
+</Base>
+
+<style>
+  .case-study {
+    padding-block: var(--space-5);
+  }
+  h1 {
+    font-size: clamp(2rem, 5vw, 3rem);
+    margin: var(--space-1) 0;
+    max-width: 26ch;
+  }
+  .summary {
+    color: var(--text-muted);
+    font-size: 1.125rem;
+    max-width: var(--measure);
+  }
+  .stack {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-1);
+    padding: 0;
+    margin: var(--space-2) 0;
+    list-style: none;
+  }
+  .stack li {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 0.125rem 0.625rem;
+  }
+  .prose {
+    max-width: var(--measure);
+    margin-block: var(--space-3);
+  }
+  .prose :global(h2) {
+    font-size: 1.375rem;
+    margin-block: var(--space-3) var(--space-1);
+  }
+  .prose :global(p) {
+    margin-block: var(--space-1);
+  }
+  .prose :global(ul) {
+    padding-left: 1.25rem;
+  }
+  .evidence-box {
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--surface);
+    padding: var(--space-2) var(--space-3);
+    max-width: var(--measure);
+  }
+  .evidence-box ul {
+    margin: var(--space-1) 0 0;
+    padding-left: 1.25rem;
+  }
+  .evidence-box .pending {
+    color: var(--text-muted);
+    font-style: italic;
+  }
+  .footnote {
+    color: var(--text-muted);
+    font-size: 0.9375rem;
+  }
+</style>

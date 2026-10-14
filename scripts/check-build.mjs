@@ -1,5 +1,5 @@
 // Build-output gate: the one seam (per spec). Asserts on emitted HTML only.
-import { access, readFile } from "node:fs/promises";
+import { access, readFile, readdir } from "node:fs/promises";
 import { join } from "node:path";
 
 const dist = join(process.cwd(), "dist");
@@ -20,10 +20,21 @@ async function mustContain(file, needles) {
 const HEADLINE = "Data engineer. Founder of Kinetic Kraft Robotics.";
 const SECTIONS = ["Projects", "Skills", "About", "Certifications", "Resume", "Contact"];
 
+// The sample Case Study authored for the content-pipeline ticket.
+const SAMPLE = {
+  slug: "retail-medallion-warehouse",
+  galleryNeedles: ["Retail Store Data Warehouse", "Bronze → Silver → Gold"],
+  pageNeedles: ["MinIO", "Apache Airflow 3", "Evidence"],
+};
+
 try {
-  await mustContain("index.html", [HEADLINE, ...SECTIONS]);
+  await mustContain("index.html", [HEADLINE, ...SECTIONS, ...SAMPLE.galleryNeedles]);
+  await mustContain(join("projects", SAMPLE.slug, "index.html"), SAMPLE.pageNeedles);
   if (!(await exists(join(dist, "404.html")))) throw new Error("missing build output: 404.html");
-  console.log("check-build: OK — index + 404 emitted, Headline and sections present");
+  const projectPages = (await exists(join(dist, "projects")))
+    ? (await readdir(join(dist, "projects"))).filter((d) => !d.startsWith("."))
+    : [];
+  console.log(`check-build: OK — index, 404, ${projectPages.length} Case Study page(s)`);
 } catch (err) {
   console.error(`check-build: FAIL — ${err.message}`);
   process.exit(1);

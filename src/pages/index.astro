@@ -1,5 +1,11 @@
 ---
+import { getCollection } from "astro:content";
 import Base from "../layouts/Base.astro";
+import ProjectCard from "../components/ProjectCard.astro";
+
+const projects = (await getCollection("projects")).sort(
+  (a, b) => a.data.order - b.data.order
+);
 ---
 
 <Base title="Leslie Angu — Data Engineer">
@@ -22,7 +28,12 @@ import Base from "../layouts/Base.astro";
     <div class="container">
       <p class="kicker">Featured Projects</p>
       <h2 class="section-title">Case studies</h2>
-      <p class="stub">Five Featured Projects land here — each a Case Study with Evidence.</p>
+      <p class="gallery-intro">
+        Five Featured Projects — each a Case Study with the Evidence to back it up.
+      </p>
+      <div class="gallery">
+        {projects.map((project) => <ProjectCard project={project} featured={project.data.order === 1} />)}
+      </div>
     </div>
   </section>
 
@@ -104,6 +115,16 @@ import Base from "../layouts/Base.astro";
     background: transparent;
     color: var(--accent);
     border: 1px solid var(--accent);
+  }
+  .gallery-intro {
+    color: var(--text-muted);
+    max-width: var(--measure);
+  }
+  .gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 21rem), 1fr));
+    gap: var(--space-2);
+    margin-top: var(--space-3);
   }
   .stub {
     color: var(--text-muted);
