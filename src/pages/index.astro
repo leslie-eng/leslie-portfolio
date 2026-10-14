@@ -1,0 +1,111 @@
+---
+import Base from "../layouts/Base.astro";
+---
+
+<Base title="Leslie Angu — Data Engineer">
+  <section class="hero">
+    <div class="container">
+      <p class="kicker">Leslie Angu · Nairobi, Kenya</p>
+      <h1>Data engineer. Founder of Kinetic Kraft Robotics.</h1>
+      <p class="lede">
+        I build data platforms end to end — from sensors in the field to warehouses in the
+        cloud — and I ship them as real products, not demos.
+      </p>
+      <div class="hero-actions">
+        <a class="button" href="#projects">View the work</a>
+        <a class="button ghost" href="#contact">Get in touch</a>
+      </div>
+    </div>
+  </section>
+
+  <section id="projects" class="section">
+    <div class="container">
+      <p class="kicker">Featured Projects</p>
+      <h2 class="section-title">Case studies</h2>
+      <p class="stub">Five Featured Projects land here — each a Case Study with Evidence.</p>
+    </div>
+  </section>
+
+  <section id="skills" class="section">
+    <div class="container">
+      <p class="kicker">Skills</p>
+      <h2 class="section-title">What I work with</h2>
+      <p class="stub">Skills grouped by discipline: data engineering, embedded, software.</p>
+    </div>
+  </section>
+
+  <section id="about" class="section">
+    <div class="container">
+      <p class="kicker">About</p>
+      <h2 class="section-title">The story</h2>
+      <p class="stub">How an electrical engineer became a data engineer who ships hardware.</p>
+    </div>
+  </section>
+
+  <section id="certifications" class="section">
+    <div class="container">
+      <p class="kicker">Certifications</p>
+      <h2 class="section-title">Credentials</h2>
+      <p class="stub">Certifications and verified credentials.</p>
+    </div>
+  </section>
+
+  <section id="resume" class="section">
+    <div class="container">
+      <p class="kicker">Resume</p>
+      <h2 class="section-title">One page, ATS-ready</h2>
+      <p class="stub">Downloadable Resume lands here.</p>
+    </div>
+  </section>
+
+  <section id="contact" class="section">
+    <div class="container">
+      <p class="kicker">Contact</p>
+      <h2 class="section-title">Get in touch</h2>
+      <p class="stub">Email, GitHub, LinkedIn.</p>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .hero {
+    padding-block: var(--space-6) var(--space-5);
+  }
+  h1 {
+    font-size: clamp(2.25rem, 6vw, 3.75rem);
+    margin: var(--space-2) 0;
+    max-width: 24ch;
+  }
+  .lede {
+    color: var(--text-muted);
+    font-size: 1.1875rem;
+    max-width: var(--measure);
+  }
+  .hero-actions {
+    display: flex;
+    gap: var(--space-2);
+    margin-top: var(--space-4);
+    flex-wrap: wrap;
+  }
+  .button {
+    font-family: var(--font-mono);
+    font-size: 0.9375rem;
+    padding: 0.75rem 1.25rem;
+    border-radius: var(--radius);
+    background: var(--accent);
+    color: var(--bg);
+    font-weight: 600;
+  }
+  .button:hover {
+    text-decoration: none;
+    filter: brightness(1.1);
+  }
+  .button.ghost {
+    background: transparent;
+    color: var(--accent);
+    border: 1px solid var(--accent);
+  }
+  .stub {
+    color: var(--text-muted);
+  }
+</style>

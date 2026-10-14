@@ -1,0 +1,88 @@
+---
+import "../styles/global.css";
+
+interface Props {
+  title: string;
+  description?: string;
+}
+
+const { title, description = "Leslie Angu — data engineer and founder of Kinetic Kraft Robotics. Case studies from the field to the warehouse." } = Astro.props;
+const nav = [
+  { href: "#projects", label: "Projects" },
+  { href: "#skills", label: "Skills" },
+  { href: "#about", label: "About" },
+  { href: "#certifications", label: "Certifications" },
+  { href: "#resume", label: "Resume" },
+  { href: "#contact", label: "Contact" },
+];
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="generator" content={Astro.generator} />
+    <meta name="description" content={description} />
+    <title>{title}</title>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <header class="site-header">
+      <div class="container site-header-inner">
+        <a href="/" class="brand">leslie-angu</a>
+        <nav aria-label="Main">
+          {nav.map((item) => <a href={item.href}>{item.label}</a>)}
+        </nav>
+      </div>
+    </header>
+    <main id="main">
+      <slot />
+    </main>
+    <footer class="site-footer">
+      <div class="container">
+        <span class="kicker">leslie-angu</span>
+        <p>Nairobi, Kenya · <a href="https://github.com/leslie-eng">GitHub</a> · <a href="https://www.linkedin.com/in/leslie-angu-00aa86341">LinkedIn</a></p>
+      </div>
+    </footer>
+  </body>
+</html>
+
+<style>
+  .site-header {
+    border-bottom: 1px solid var(--line);
+    background: color-mix(in srgb, var(--bg) 85%, transparent);
+  }
+  .site-header-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+    padding-block: var(--space-2);
+    flex-wrap: wrap;
+  }
+  .brand {
+    font-family: var(--font-mono);
+    color: var(--text);
+    font-weight: 600;
+  }
+  nav {
+    display: flex;
+    gap: var(--space-3);
+    flex-wrap: wrap;
+  }
+  nav a {
+    color: var(--text-muted);
+    font-size: 0.9375rem;
+  }
+  nav a:hover {
+    color: var(--accent);
+    text-decoration: none;
+  }
+  .site-footer {
+    border-top: 1px solid var(--line);
+    padding-block: var(--space-4);
+    color: var(--text-muted);
+    font-size: 0.9375rem;
+  }
+</style>
