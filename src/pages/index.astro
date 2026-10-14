@@ -41,7 +41,40 @@ const projects = (await getCollection("projects")).sort(
     <div class="container">
       <p class="kicker">Skills</p>
       <h2 class="section-title">What I work with</h2>
-      <p class="stub">Skills grouped by discipline: data engineering, embedded, software.</p>
+      <div class="skill-groups">
+        <div class="skill-group">
+          <h3>Data Engineering</h3>
+          <ul role="list">
+            <li>SQL — joins, CTEs, window functions, query optimization</li>
+            <li>Python — Pandas, NumPy, Scikit-learn, Statsmodels</li>
+            <li>Apache Airflow · Apache Kafka · PySpark</li>
+            <li>PostgreSQL · Kimball dimensional modeling · star schema</li>
+            <li>AWS (S3, Glue, Redshift) · Google BigQuery · Azure Data Factory</li>
+            <li>Power BI · Tableau · Grafana · automated reporting</li>
+          </ul>
+        </div>
+        <div class="skill-group">
+          <h3>Embedded &amp; Hardware</h3>
+          <ul role="list">
+            <li>C / C++ · Arduino · ESP32 · STM32</li>
+            <li>UART · SPI · I2C · BLE · Wi-Fi</li>
+            <li>PCB design (KiCad) · circuit simulation · sensor integration</li>
+            <li>Battery management systems · buck/boost converters · MPPT</li>
+            <li>Oscilloscope, multimeter, logic analyzer · firmware OTA</li>
+            <li>IoT cloud integration (Blynk, Firebase)</li>
+          </ul>
+        </div>
+        <div class="skill-group">
+          <h3>Software</h3>
+          <ul role="list">
+            <li>FastAPI · SQLAlchemy · Alembic</li>
+            <li>React · TypeScript · Vite · Tailwind</li>
+            <li>Node.js · REST APIs</li>
+            <li>Git &amp; GitHub · Agile/Scrum</li>
+            <li>Testing, version control, documentation as engineering practice</li>
+          </ul>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -49,7 +82,30 @@ const projects = (await getCollection("projects")).sort(
     <div class="container">
       <p class="kicker">About</p>
       <h2 class="section-title">The story</h2>
-      <p class="stub">How an electrical engineer became a data engineer who ships hardware.</p>
+      <div class="about-copy">
+        <p>
+          I started in hardware: an Electrical &amp; Electronic Engineering degree at the
+          Technical University of Mombasa, then firmware and sensors — microcontrollers that
+          measure real things in real places.
+        </p>
+        <p>
+          The machines kept producing data nobody was reading, so I moved down the stack into
+          data: telemetry analysis at Lectrotel Microsystems, analytics and modeling at Almasi
+          Bottlers, and data engineering at Afrineuron — building the pipelines, warehouses, and
+          dashboards that turn raw signals into decisions.
+        </p>
+        <p>
+          Then I founded <strong>Kinetic Kraft Robotics</strong> to build systems end to end.
+          Its first project is <strong>Address Yangu</strong>: a housing-vacancy platform with
+          hardware units installed on real buildings — the device captures the signal, the
+          platform turns it into an answer a tenant can use.
+        </p>
+        <p>
+          That is my Range: embedded where the data is born, data engineering where it is
+          tamed, software where it meets people. The headline is data engineering; the Range is
+          why my pipelines never lose touch with reality.
+        </p>
+      </div>
     </div>
   </section>
 
@@ -57,7 +113,28 @@ const projects = (await getCollection("projects")).sort(
     <div class="container">
       <p class="kicker">Certifications</p>
       <h2 class="section-title">Credentials</h2>
-      <p class="stub">Certifications and verified credentials.</p>
+      <ul class="cert-list" role="list">
+        <li>
+          <strong>Applied Data Science Lab</strong> — WorldQuant University
+          <span class="cert-note">
+            · <a href="https://www.credly.com/badges/cd1c52d3-7981-49ef-9f7b-b9d12e83a934" rel="noopener">Credly-verified</a> · 8 end-to-end projects: SQL, NoSQL, APIs, ETL, ML, visualization
+          </span>
+        </li>
+        <li>
+          <strong>Machine Learning Specialisation</strong> — Stanford University via Coursera
+        </li>
+        <li>
+          <strong>Certified Data Analyst</strong> — LuxDev Academy
+        </li>
+        <li>
+          <strong>Certified Data Engineer</strong> — LuxDev Academy
+          <span class="cert-note"> · expected</span>
+        </li>
+        <li>
+          <strong>AWS Data Engineering Certification</strong>
+          <span class="cert-note"> · in progress</span>
+        </li>
+      </ul>
     </div>
   </section>
 
@@ -65,7 +142,11 @@ const projects = (await getCollection("projects")).sort(
     <div class="container">
       <p class="kicker">Resume</p>
       <h2 class="section-title">One page, ATS-ready</h2>
-      <p class="stub">Downloadable Resume lands here.</p>
+      <p class="resume-note">
+        The single source of truth: experience, skills, education, and certifications in a
+        text-extractable PDF your ATS can parse.
+      </p>
+      <a class="button" href="/resume.pdf" download>Download Resume (PDF)</a>
     </div>
   </section>
 
@@ -73,7 +154,16 @@ const projects = (await getCollection("projects")).sort(
     <div class="container">
       <p class="kicker">Contact</p>
       <h2 class="section-title">Get in touch</h2>
-      <p class="stub">Email, GitHub, LinkedIn.</p>
+      <p class="contact-note">
+        Recruiting for a data engineering role, or want to talk hardware-to-warehouse systems?
+        One click:
+      </p>
+      <ul class="contact-links" role="list">
+        <li><a href="mailto:anguleslie7@gmail.com">anguleslie7@gmail.com</a></li>
+        <li><a href="https://github.com/leslie-eng" rel="noopener">github.com/leslie-eng</a></li>
+        <li><a href="https://www.linkedin.com/in/leslie-angu-00aa86341" rel="noopener">linkedin.com/in/leslie-angu-00aa86341</a></li>
+      </ul>
+      <p class="contact-note">Nairobi, Kenya.</p>
     </div>
   </section>
 </Base>
@@ -125,6 +215,66 @@ const projects = (await getCollection("projects")).sort(
     grid-template-columns: repeat(auto-fill, minmax(min(100%, 21rem), 1fr));
     gap: var(--space-2);
     margin-top: var(--space-3);
+  }
+  .skill-groups {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 19rem), 1fr));
+    gap: var(--space-2);
+    margin-top: var(--space-3);
+  }
+  .skill-group {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: var(--space-3);
+  }
+  .skill-group h3 {
+    margin: 0 0 var(--space-1);
+    font-size: 1.125rem;
+    color: var(--accent);
+  }
+  .skill-group ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    color: var(--text-muted);
+    font-size: 0.9375rem;
+  }
+  .skill-group li {
+    padding-block: 0.25rem;
+  }
+  .about-copy {
+    max-width: var(--measure);
+    color: var(--text-muted);
+  }
+  .about-copy strong {
+    color: var(--text);
+  }
+  .cert-list {
+    max-width: var(--measure);
+    margin: var(--space-2) 0 0;
+    padding-left: 1.25rem;
+  }
+  .cert-list li {
+    padding-block: 0.375rem;
+  }
+  .cert-note {
+    color: var(--text-muted);
+    font-size: 0.9375rem;
+  }
+  .resume-note,
+  .contact-note {
+    color: var(--text-muted);
+    max-width: var(--measure);
+  }
+  .contact-links {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    gap: var(--space-3);
+    flex-wrap: wrap;
+    font-family: var(--font-mono);
+    font-size: 0.9375rem;
   }
   .stub {
     color: var(--text-muted);
