@@ -38,10 +38,22 @@ const SAMPLE = {
   pageNeedles: ["MinIO", "Apache Airflow 3", "Evidence"],
 };
 
+// All five Featured Projects must be present in the gallery and as pages (T4).
+const ALL_PROJECTS = [
+  { slug: "address-yangu", pageNeedles: ["Kinetic Kraft Robotics", "unlock-with-token"] },
+  { slug: "retail-medallion-warehouse", pageNeedles: SAMPLE.pageNeedles },
+  { slug: "streaming-etl-kafka", pageNeedles: ["Kafka", "Airflow"] },
+  { slug: "biolinks-platform", pageNeedles: ["biopharmlifescience.co.ke", "contract"] },
+  { slug: "classtrack", pageNeedles: ["Claude", "WhatsApp"] },
+];
+
 try {
   await mustContain("index.html", [HEADLINE, ...SECTIONS, ...SECTION_CONTENT, ...SAMPLE.galleryNeedles]);
-  await mustContain(join("projects", SAMPLE.slug, "index.html"), SAMPLE.pageNeedles);
   if (!(await exists(join(dist, "404.html")))) throw new Error("missing build output: 404.html");
+
+  for (const p of ALL_PROJECTS) {
+    await mustContain(join("projects", p.slug, "index.html"), p.pageNeedles);
+  }
 
   const resumePath = join(dist, "resume.pdf");
   if (!(await exists(resumePath))) throw new Error("missing build output: resume.pdf");
@@ -51,10 +63,7 @@ try {
   await fh.close();
   if (header.toString("utf8") !== "%PDF-") throw new Error("resume.pdf is not a PDF");
 
-  const projectPages = (await exists(join(dist, "projects")))
-    ? (await readdir(join(dist, "projects"))).filter((d) => !d.startsWith("."))
-    : [];
-  console.log(`check-build: OK — index, 404, ${projectPages.length} Case Study page(s), resume.pdf`);
+  console.log(`check-build: OK — index, 404, ${ALL_PROJECTS.length} Case Study page(s), resume.pdf`);
 } catch (err) {
   console.error(`check-build: FAIL — ${err.message}`);
   process.exit(1);
