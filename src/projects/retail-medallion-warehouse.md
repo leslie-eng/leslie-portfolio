@@ -2,6 +2,8 @@
 title: Retail Store Data Warehouse
 order: 2
 summary: A batch data pipeline that lands a real e-commerce dataset in an object store, then models it Bronze → Silver → Gold into a PostgreSQL warehouse, orchestrated by Airflow.
+discipline: DATA ENGINEERING
+impact: Nine-table e-commerce dataset modeled Bronze → Silver → Gold; questions like revenue per state per category become single queries over governed dimensions.
 stack:
   - Apache Airflow 3
   - PostgreSQL

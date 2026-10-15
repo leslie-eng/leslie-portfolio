@@ -10,6 +10,8 @@ const projects = defineCollection({
     title: z.string(),
     order: z.number().int().min(1),
     summary: z.string().max(200),
+    discipline: z.string().default("DATA ENGINEERING"),
+    impact: z.string().max(220).optional(),
     stack: z.array(z.string()),
     // Evidence that the work is real. At least one entry per Case Study;
     // kind "photos" may be pending while images are awaited.

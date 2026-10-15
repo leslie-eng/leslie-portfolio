@@ -9,274 +9,389 @@ const projects = (await getCollection("projects")).sort(
 ---
 
 <Base title="Leslie Angu — Data Engineer">
-  <section class="hero">
+  {/* [01] SYSTEM — hero entry */}
+  <section id="system" class="hero">
     <div class="container">
-      <p class="kicker">Leslie Angu · Nairobi, Kenya</p>
-      <h1>Data engineer. Founder of Kinetic Kraft Robotics.</h1>
-      <p class="lede">
-        I build data platforms end to end — from sensors in the field to warehouses in the
-        cloud — and I ship them as real products, not demos.
-      </p>
-      <div class="hero-actions">
-        <a class="button" href="#projects">View the work</a>
-        <a class="button ghost" href="#contact">Get in touch</a>
+      <div class="section-head">
+        <span><span class="idx">[001]</span> SYSTEM // HERO ENTRY</span>
+        <span>// SPEC: DATA ENGINEER · NAIROBI · KENYA</span>
+      </div>
+      <div class="hero-grid">
+        <div class="hero-main">
+          <p class="registry mono">
+            REGISTRY: LESLIE GUSERWA ANGU — BSC ELECTRICAL &amp; ELECTRONIC ENGINEERING
+          </p>
+          <h1 class="display-title">LESLIE ANGU</h1>
+          <p class="subhead">
+            Data engineer. Founder of Kinetic Kraft Robotics.
+          </p>
+          <div class="hero-info mono">
+            <span>GEO // NAIROBI, KENYA (-01°17'S 36°49'E)</span>
+            <span>DISCIPLINE // EDGE-TO-CLOUD DATA SYSTEMS</span>
+          </div>
+          <p class="lede">
+            I build data platforms end to end — from sensors installed on real buildings to
+            warehouses in the cloud — and I ship them as products, not demos. The flagship is
+            Address Yangu, my startup's housing-vacancy platform with hardware in the field.
+          </p>
+          <div class="hero-actions">
+            <a class="btn" href="#projects">EXPLORE INDEX -&gt;</a>
+            <a class="btn ghost" href="/resume.pdf" download>DOWNLOAD RESUME [PDF]</a>
+            <a class="textlink mono" href="#contact">OR CONNECT DIRECTLY //</a>
+          </div>
+        </div>
+
+        <aside class="hero-rail">
+          <div class="panel">
+            <p class="panel-head mono">CAPABILITY MATRIX</p>
+            <dl class="spec-list">
+              <div class="spec-row"><dt>STREAMING</dt><dd>KAFKA → POSTGRES</dd></div>
+              <div class="spec-row"><dt>ORCHESTRATION</dt><dd>APACHE AIRFLOW 3</dd></div>
+              <div class="spec-row"><dt>WAREHOUSE</dt><dd>MEDALLION / KIMBALL</dd></div>
+              <div class="spec-row"><dt>CLOUD</dt><dd>AWS S3 · GLUE · REDSHIFT</dd></div>
+              <div class="spec-row"><dt>PLATFORMS</dt><dd>FASTAPI + REACT</dd></div>
+              <div class="spec-row"><dt>FIELD</dt><dd>ESP32 · SENSORS · C/C++</dd></div>
+            </dl>
+          </div>
+          <div class="panel lab">
+            <p class="panel-head mono">HARDWARE LAB // FLAGSHIP</p>
+            <div class="fig-frame">
+              <span class="mono">FIG.01 // FIELD INSTALLATION<br />IMAGES PENDING</span>
+            </div>
+            <p class="panel-note mono">
+              ADDRESS YANGU UNITS — INSTALLED ON BUILDINGS. SEE [002] PROJECTS.
+            </p>
+          </div>
+        </aside>
       </div>
     </div>
   </section>
 
+  {/* telemetry strip — self-referential, honest */}
+  <div class="telemetry" aria-hidden="true">
+    <div class="container telemetry-inner mono">
+      <span>BUILD // ASTRO STATIC</span>
+      <span>CLIENT JS // NONE</span>
+      <span>ANALYTICS // NONE</span>
+      <span>SECRETS // ZERO</span>
+      <span>STATUS // <span class="lit">OPERATIONAL</span></span>
+    </div>
+  </div>
+
+  {/* [02] PROJECTS */}
   <section id="projects" class="section">
     <div class="container">
-      <p class="kicker">Featured Projects</p>
-      <h2 class="section-title">Case studies</h2>
-      <p class="gallery-intro">
-        Five Featured Projects — each a Case Study with the Evidence to back it up.
-      </p>
-      <div class="gallery">
-        {projects.map((project) => <ProjectCard project={project} featured={project.data.order === 1} />)}
+      <div class="section-head">
+        <span><span class="idx">[002]</span> PROJECTS // SELECTED WORK</span>
+        <span>CASE STUDIES · EVIDENCE-LED</span>
+      </div>
+      <div class="section-body">
+        <div class="index-head">
+          <h2 class="display-title">PROJECT INDEX &amp;<br />ARCHITECTURAL LOGS</h2>
+          <p class="index-note">
+            Five Featured Projects. Each is a Case Study — problem, approach, stack, outcome —
+            with Evidence you can verify.
+          </p>
+        </div>
+        <div class="ledger">
+          {projects.map((project) => <ProjectCard project={project} />)}
+        </div>
       </div>
     </div>
   </section>
 
+  {/* [03] SKILLS */}
   <section id="skills" class="section">
     <div class="container">
-      <p class="kicker">Skills</p>
-      <h2 class="section-title">What I work with</h2>
-      <div class="skill-groups">
-        <div class="skill-group">
-          <h3>Data Engineering</h3>
-          <ul role="list">
-            <li>SQL — joins, CTEs, window functions, query optimization</li>
-            <li>Python — Pandas, NumPy, Scikit-learn, Statsmodels</li>
-            <li>Apache Airflow · Apache Kafka · PySpark</li>
-            <li>PostgreSQL · Kimball dimensional modeling · star schema</li>
-            <li>AWS (S3, Glue, Redshift) · Google BigQuery · Azure Data Factory</li>
-            <li>Power BI · Tableau · Grafana · automated reporting</li>
-          </ul>
+      <div class="section-head">
+        <span><span class="idx">[003]</span> SKILLS // TOOLING MATRIX</span>
+        <span>GROUPED BY DISCIPLINE</span>
+      </div>
+      <div class="section-body matrix-grid">
+        <div class="panel">
+          <p class="panel-head mono">DATA ENGINEERING</p>
+          <dl class="spec-list">
+            <div class="spec-row"><dt>QUERY</dt><dd>SQL · CTEs · WINDOW FN</dd></div>
+            <div class="spec-row"><dt>PIPELINES</dt><dd>ELT/ETL · AIRFLOW · KAFKA</dd></div>
+            <div class="spec-row"><dt>MODELING</dt><dd>KIMBALL · STAR SCHEMA</dd></div>
+            <div class="spec-row"><dt>CLOUD</dt><dd>AWS · BIGQUERY · AZURE ADF</dd></div>
+            <div class="spec-row"><dt>BI</dt><dd>POWER BI · TABLEAU · GRAFANA</dd></div>
+            <div class="spec-row"><dt>LANG</dt><dd>PYTHON · PANDAS · PYSPARK</dd></div>
+          </dl>
         </div>
-        <div class="skill-group">
-          <h3>Embedded &amp; Hardware</h3>
-          <ul role="list">
-            <li>C / C++ · Arduino · ESP32 · STM32</li>
-            <li>UART · SPI · I2C · BLE · Wi-Fi</li>
-            <li>PCB design (KiCad) · circuit simulation · sensor integration</li>
-            <li>Battery management systems · buck/boost converters · MPPT</li>
-            <li>Oscilloscope, multimeter, logic analyzer · firmware OTA</li>
-            <li>IoT cloud integration (Blynk, Firebase)</li>
-          </ul>
+        <div class="panel">
+          <p class="panel-head mono">EMBEDDED &amp; HARDWARE</p>
+          <dl class="spec-list">
+            <div class="spec-row"><dt>MCU</dt><dd>ESP32 · ARDUINO · STM32</dd></div>
+            <div class="spec-row"><dt>BUSES</dt><dd>UART · SPI · I2C · BLE</dd></div>
+            <div class="spec-row"><dt>LANG</dt><dd>C / C++</dd></div>
+            <div class="spec-row"><dt>HW</dt><dd>KICAD PCB · BMS · MPPT</dd></div>
+            <div class="spec-row"><dt>IOT</dt><dd>BLYNK · FIREBASE</dd></div>
+          </dl>
         </div>
-        <div class="skill-group">
-          <h3>Software</h3>
-          <ul role="list">
-            <li>FastAPI · SQLAlchemy · Alembic</li>
-            <li>React · TypeScript · Vite · Tailwind</li>
-            <li>Node.js · REST APIs</li>
-            <li>Git &amp; GitHub · Agile/Scrum</li>
-            <li>Testing, version control, documentation as engineering practice</li>
-          </ul>
+        <div class="panel">
+          <p class="panel-head mono">SOFTWARE</p>
+          <dl class="spec-list">
+            <div class="spec-row"><dt>BACKEND</dt><dd>FASTAPI · SQLALCHEMY</dd></div>
+            <div class="spec-row"><dt>FRONTEND</dt><dd>REACT · TS · VITE</dd></div>
+            <div class="spec-row"><dt>OPS</dt><dd>GIT · GITHUB · VERCEL</dd></div>
+            <div class="spec-row"><dt>PRACTICE</dt><dd>TESTS · DOCS · CI</dd></div>
+          </dl>
         </div>
       </div>
     </div>
   </section>
 
+  {/* [04] ABOUT */}
   <section id="about" class="section">
     <div class="container">
-      <p class="kicker">About</p>
-      <h2 class="section-title">The story</h2>
-      <div class="about-copy">
-        <p>
-          I started in hardware: an Electrical &amp; Electronic Engineering degree at the
-          Technical University of Mombasa, then firmware and sensors — microcontrollers that
-          measure real things in real places.
-        </p>
-        <p>
-          The machines kept producing data nobody was reading, so I moved down the stack into
-          data: telemetry analysis at Lectrotel Microsystems, analytics and modeling at Almasi
-          Bottlers, and data engineering at Afrineuron — building the pipelines, warehouses, and
-          dashboards that turn raw signals into decisions.
-        </p>
-        <p>
-          Then I founded <strong>Kinetic Kraft Robotics</strong> to build systems end to end.
-          Its first project is <strong>Address Yangu</strong>: a housing-vacancy platform with
-          hardware units installed on real buildings — the device captures the signal, the
-          platform turns it into an answer a tenant can use.
-        </p>
-        <p>
-          That is my Range: embedded where the data is born, data engineering where it is
-          tamed, software where it meets people. The headline is data engineering; the Range is
-          why my pipelines never lose touch with reality.
-        </p>
+      <div class="section-head">
+        <span><span class="idx">[004]</span> ABOUT // OPERATOR LOG</span>
+        <span>HARDWARE → DATA → PRODUCTS</span>
+      </div>
+      <div class="section-body about-grid">
+        <div class="about-copy">
+          <p>
+            I started in hardware: an Electrical &amp; Electronic Engineering degree at the
+            Technical University of Mombasa, then firmware and sensors — microcontrollers that
+            measure real things in real places.
+          </p>
+          <p>
+            The machines kept producing data nobody was reading, so I moved down the stack into
+            data: telemetry analysis at Lectrotel Microsystems, analytics and modeling at Almasi
+            Bottlers, and data engineering at Afrineuron — building the pipelines, warehouses,
+            and dashboards that turn raw signals into decisions.
+          </p>
+          <p>
+            Then I founded <strong>Kinetic Kraft Robotics</strong> to build systems end to end.
+            Its first project is <strong>Address Yangu</strong>: a housing-vacancy platform with
+            hardware units installed on real buildings — the device captures the signal, the
+            platform turns it into an answer a tenant can use.
+          </p>
+          <p>
+            That is my Range: embedded where the data is born, data engineering where it is
+            tamed, software where it meets people. The headline is data engineering; the Range
+            is why my pipelines never lose touch with reality.
+          </p>
+        </div>
+        <aside class="panel">
+          <p class="panel-head mono">OPERATOR SPEC</p>
+          <dl class="spec-list">
+            <div class="spec-row"><dt>BASE</dt><dd>NAIROBI, KE</dd></div>
+            <div class="spec-row"><dt>FOUNDER</dt><dd>KINETIC KRAFT ROBOTICS</dd></div>
+            <div class="spec-row"><dt>NOW</dt><dd>AFRINEURON // DATA</dd></div>
+            <div class="spec-row"><dt>DEGREE</dt><dd>BSC EEE // TUM</dd></div>
+            <div class="spec-row"><dt>LANG</dt><dd>EN · SWAHILI</dd></div>
+          </dl>
+        </aside>
       </div>
     </div>
   </section>
 
+  {/* [05] CERTIFICATIONS */}
   <section id="certifications" class="section">
     <div class="container">
-      <p class="kicker">Certifications</p>
-      <h2 class="section-title">Credentials</h2>
-      <ul class="cert-list" role="list">
-        <li>
-          <strong>Applied Data Science Lab</strong> — WorldQuant University
-          <span class="cert-note">
-            · <a href="https://www.credly.com/badges/cd1c52d3-7981-49ef-9f7b-b9d12e83a934" rel="noopener">Credly-verified</a> · 8 end-to-end projects: SQL, NoSQL, APIs, ETL, ML, visualization
-          </span>
-        </li>
-        <li>
-          <strong>Machine Learning Specialisation</strong> — Stanford University via Coursera
-        </li>
-        <li>
-          <strong>Certified Data Analyst</strong> — LuxDev Academy
-        </li>
-        <li>
-          <strong>Certified Data Engineer</strong> — LuxDev Academy
-          <span class="cert-note"> · expected</span>
-        </li>
-        <li>
-          <strong>AWS Data Engineering Certification</strong>
-          <span class="cert-note"> · in progress</span>
-        </li>
-      </ul>
+      <div class="section-head">
+        <span><span class="idx">[005]</span> CERTIFICATIONS // CREDENTIAL LOG</span>
+        <span>VERIFIED WHERE POSSIBLE</span>
+      </div>
+      <div class="section-body">
+        <div class="cert-row">
+          <span class="mono idx">C-01</span>
+          <span class="cert-name">Applied Data Science Lab — WorldQuant University</span>
+          <a class="mono cert-link" href="https://www.credly.com/badges/cd1c52d3-7981-49ef-9f7b-b9d12e83a934" rel="noopener">CREDLY-VERIFIED // 8 PROJECTS -&gt;</a>
+        </div>
+        <div class="cert-row">
+          <span class="mono idx">C-02</span>
+          <span class="cert-name">Machine Learning Specialisation — Stanford University via Coursera</span>
+          <span class="mono cert-link dim">ISSUED 2023</span>
+        </div>
+        <div class="cert-row">
+          <span class="mono idx">C-03</span>
+          <span class="cert-name">Certified Data Analyst — LuxDev Academy</span>
+          <span class="mono cert-link dim">COMPLETED</span>
+        </div>
+        <div class="cert-row">
+          <span class="mono idx">C-04</span>
+          <span class="cert-name">Certified Data Engineer — LuxDev Academy</span>
+          <span class="mono cert-link dim">EXPECTED</span>
+        </div>
+        <div class="cert-row">
+          <span class="mono idx">C-05</span>
+          <span class="cert-name">AWS Data Engineering Certification</span>
+          <span class="mono cert-link dim">IN PROGRESS</span>
+        </div>
+      </div>
     </div>
   </section>
 
+  {/* [06] RESUME */}
   <section id="resume" class="section">
     <div class="container">
-      <p class="kicker">Resume</p>
-      <h2 class="section-title">One page, ATS-ready</h2>
-      <p class="resume-note">
-        The single source of truth: experience, skills, education, and certifications in a
-        text-extractable PDF your ATS can parse.
-      </p>
-      <a class="button" href="/resume.pdf" download>Download Resume (PDF)</a>
+      <div class="section-head">
+        <span><span class="idx">[006]</span> RESUME // ATS-READY</span>
+        <span>TEXT-EXTRACTABLE PDF</span>
+      </div>
+      <div class="section-body resume-panel">
+        <p class="mono resume-line">
+          $ ONE PAGE · EXPERIENCE: AFRINEURON / ALMASI / LECTROTEL · SELECTABLE TEXT · NO TABLES
+        </p>
+        <a class="btn" href="/resume.pdf" download>DOWNLOAD RESUME [PDF] -&gt;</a>
+      </div>
     </div>
   </section>
 
+  {/* [07] CONTACT */}
   <section id="contact" class="section">
     <div class="container">
-      <p class="kicker">Contact</p>
-      <h2 class="section-title">Get in touch</h2>
-      <p class="contact-note">
-        Recruiting for a data engineering role, or want to talk hardware-to-warehouse systems?
-        One click:
-      </p>
-      <ul class="contact-links" role="list">
-        <li><a href="mailto:anguleslie7@gmail.com">anguleslie7@gmail.com</a></li>
-        <li><a href="https://github.com/leslie-eng" rel="noopener">github.com/leslie-eng</a></li>
-        <li><a href="https://www.linkedin.com/in/leslie-angu-00aa86341" rel="noopener">linkedin.com/in/leslie-angu-00aa86341</a></li>
-      </ul>
-      <p class="contact-note">Nairobi, Kenya.</p>
+      <div class="section-head">
+        <span><span class="idx">[007]</span> CONTACT // OPEN CHANNEL</span>
+        <span>SINGLE-CLICK · NO FORMS</span>
+      </div>
+      <div class="section-body terminal">
+        <p class="mono term-line"><span class="prompt">$</span> whoami — data engineer open to data engineering roles</p>
+        <p class="mono term-line"><span class="prompt">$</span> channels --list</p>
+        <div class="term-links">
+          <a class="btn" href="mailto:anguleslie7@gmail.com">[EXECUTE] EMAIL — anguleslie7@gmail.com</a>
+          <a class="btn ghost" href="https://github.com/leslie-eng" rel="noopener">[EXECUTE] GITHUB // LESLIE-ENG</a>
+          <a class="btn ghost" href="https://www.linkedin.com/in/leslie-angu-00aa86341" rel="noopener">[EXECUTE] LINKEDIN // LESLIE-ANGU</a>
+        </div>
+        <p class="mono term-line dim">EOF // NBO LOCAL — UTC+3</p>
+      </div>
     </div>
   </section>
 </Base>
 
 <style>
-  .hero {
-    padding-block: var(--space-6) var(--space-5);
+  .mono { font-family: var(--font-mono); }
+  .lit { color: var(--accent); }
+
+  /* hero */
+  .hero-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
+    gap: var(--space-4);
+    padding-block: var(--space-4);
   }
-  h1 {
-    font-size: clamp(2.25rem, 6vw, 3.75rem);
+  .registry { font-size: 0.6875rem; color: var(--text-muted); letter-spacing: 0.1em; text-transform: uppercase; margin: var(--space-2) 0 0; }
+  .subhead {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(1.125rem, 2.5vw, 1.625rem);
+    letter-spacing: -0.01em;
+    color: var(--accent);
     margin: var(--space-2) 0;
-    max-width: 24ch;
+    max-width: 34ch;
   }
-  .lede {
-    color: var(--text-muted);
-    font-size: 1.1875rem;
-    max-width: var(--measure);
-  }
-  .hero-actions {
-    display: flex;
-    gap: var(--space-2);
-    margin-top: var(--space-4);
-    flex-wrap: wrap;
-  }
-  .button {
-    font-family: var(--font-mono);
-    font-size: 0.9375rem;
-    padding: 0.75rem 1.25rem;
-    border-radius: var(--radius);
-    background: var(--accent);
-    color: var(--bg);
-    font-weight: 600;
-  }
-  .button:hover {
-    text-decoration: none;
-    filter: brightness(1.1);
-  }
-  .button.ghost {
-    background: transparent;
-    color: var(--accent);
-    border: 1px solid var(--accent);
-  }
-  .gallery-intro {
-    color: var(--text-muted);
-    max-width: var(--measure);
-  }
-  .gallery {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(min(100%, 21rem), 1fr));
-    gap: var(--space-2);
-    margin-top: var(--space-3);
-  }
-  .skill-groups {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(min(100%, 19rem), 1fr));
-    gap: var(--space-2);
-    margin-top: var(--space-3);
-  }
-  .skill-group {
-    background: var(--surface);
-    border: 1px solid var(--line);
-    border-radius: var(--radius);
-    padding: var(--space-3);
-  }
-  .skill-group h3 {
-    margin: 0 0 var(--space-1);
-    font-size: 1.125rem;
-    color: var(--accent);
-  }
-  .skill-group ul {
-    margin: 0;
-    padding: 0;
-    list-style: none;
-    color: var(--text-muted);
-    font-size: 0.9375rem;
-  }
-  .skill-group li {
-    padding-block: 0.25rem;
-  }
-  .about-copy {
-    max-width: var(--measure);
-    color: var(--text-muted);
-  }
-  .about-copy strong {
-    color: var(--text);
-  }
-  .cert-list {
-    max-width: var(--measure);
-    margin: var(--space-2) 0 0;
-    padding-left: 1.25rem;
-  }
-  .cert-list li {
-    padding-block: 0.375rem;
-  }
-  .cert-note {
-    color: var(--text-muted);
-    font-size: 0.9375rem;
-  }
-  .resume-note,
-  .contact-note {
-    color: var(--text-muted);
-    max-width: var(--measure);
-  }
-  .contact-links {
-    list-style: none;
-    padding: 0;
+  .hero-info {
     display: flex;
     gap: var(--space-3);
     flex-wrap: wrap;
-    font-family: var(--font-mono);
-    font-size: 0.9375rem;
-  }
-  .stub {
+    font-size: 0.6875rem;
     color: var(--text-muted);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    border-block: 1px solid var(--hairline);
+    padding-block: 0.5rem;
+    margin-block: var(--space-2);
+  }
+  .lede { color: var(--text-muted); max-width: var(--measure); font-size: 1.0625rem; }
+  .hero-actions { display: flex; gap: var(--space-2); margin-top: var(--space-3); flex-wrap: wrap; align-items: center; }
+  .textlink { font-size: 0.6875rem; color: var(--text-muted); letter-spacing: 0.1em; text-transform: uppercase; }
+  .textlink:hover { color: var(--accent); }
+
+  .hero-rail { display: flex; flex-direction: column; gap: var(--space-2); }
+  .panel { border: 1px solid var(--hairline); background: var(--surface); padding: var(--space-2); }
+  .panel-head {
+    margin: 0 0 var(--space-1);
+    font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    color: var(--accent);
+    text-transform: uppercase;
+  }
+  .spec-list { margin: 0; }
+  .fig-frame {
+    border: 1px dashed var(--hairline-bright);
+    aspect-ratio: 4 / 3;
+    display: grid;
+    place-items: center;
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 0.6875rem;
+    letter-spacing: 0.12em;
+  }
+  .panel-note { margin: var(--space-1) 0 0; font-size: 0.625rem; color: var(--text-muted); letter-spacing: 0.1em; }
+
+  /* telemetry strip */
+  .telemetry { border-block: 1px solid var(--hairline); background: var(--surface); }
+  .telemetry-inner {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--space-2);
+    flex-wrap: wrap;
+    padding-block: 0.5rem;
+    font-size: 0.625rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+
+  /* project index */
+  .index-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: end;
+    gap: var(--space-3);
+    flex-wrap: wrap;
+    margin-bottom: var(--space-3);
+  }
+  .index-note { color: var(--text-muted); max-width: 38ch; margin: 0; }
+  .ledger { display: flex; flex-direction: column; }
+
+  /* skills matrix */
+  .matrix-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr));
+    gap: var(--space-2);
+  }
+
+  /* about */
+  .about-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+    gap: var(--space-4);
+  }
+  .about-copy { max-width: var(--measure); color: var(--text-muted); }
+  .about-copy strong { color: var(--text); }
+
+  /* certifications ledger */
+  .cert-row {
+    display: grid;
+    grid-template-columns: 4rem minmax(0, 1fr) auto;
+    gap: var(--space-2);
+    align-items: baseline;
+    border-bottom: 1px solid var(--hairline);
+    padding-block: 0.875rem;
+  }
+  .cert-row .idx { color: var(--accent); font-size: 0.75rem; }
+  .cert-name { font-family: var(--font-display); font-weight: 700; font-size: 1.0625rem; }
+  .cert-link { font-size: 0.6875rem; letter-spacing: 0.1em; }
+  .cert-link.dim { color: var(--text-muted); }
+  .cert-link:not(.dim) { color: var(--accent); }
+
+  /* resume */
+  .resume-panel { display: flex; flex-direction: column; gap: var(--space-2); align-items: flex-start; }
+  .resume-line { font-size: 0.75rem; color: var(--text-muted); letter-spacing: 0.08em; }
+
+  /* contact terminal */
+  .terminal { display: flex; flex-direction: column; gap: var(--space-2); border: 1px solid var(--hairline); background: var(--surface); padding: var(--space-3); }
+  .term-line { font-size: 0.8125rem; color: var(--text-muted); margin: 0; letter-spacing: 0.04em; }
+  .term-line .prompt { color: var(--accent); }
+  .term-line.dim { color: var(--text-muted); font-size: 0.6875rem; }
+  .term-links { display: flex; gap: var(--space-2); flex-wrap: wrap; }
+
+  @media (max-width: 56rem) {
+    .hero-grid, .about-grid { grid-template-columns: 1fr; }
   }
 </style>

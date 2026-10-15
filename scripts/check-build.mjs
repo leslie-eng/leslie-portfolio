@@ -12,9 +12,10 @@ async function exists(p) {
 async function mustContain(file, needles) {
   const path = join(dist, file);
   if (!(await exists(path))) throw new Error(`missing build output: ${file}`);
-  const html = await readFile(path, "utf8");
+  const html = (await readFile(path, "utf8")).toLowerCase();
   for (const n of needles) {
-    if (!html.includes(n)) throw new Error(`${file} does not contain: "${n}"`);
+    const needle = n.toLowerCase();
+    if (!html.includes(needle)) throw new Error(`${file} does not contain: "${n}"`);
   }
 }
 

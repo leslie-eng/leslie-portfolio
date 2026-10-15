@@ -8,12 +8,11 @@ interface Props {
 
 const { title, description = "Leslie Angu — data engineer and founder of Kinetic Kraft Robotics. Case studies from the field to the warehouse." } = Astro.props;
 const nav = [
-  { href: "#projects", label: "Projects" },
-  { href: "#skills", label: "Skills" },
-  { href: "#about", label: "About" },
-  { href: "#certifications", label: "Certifications" },
-  { href: "#resume", label: "Resume" },
-  { href: "#contact", label: "Contact" },
+  { n: "01", href: "/#system", label: "System" },
+  { n: "02", href: "/#projects", label: "Projects" },
+  { n: "03", href: "/#skills", label: "Skills" },
+  { n: "04", href: "/#about", label: "About" },
+  { n: "05", href: "/#contact", label: "Contact" },
 ];
 ---
 
@@ -27,62 +26,131 @@ const nav = [
     <title>{title}</title>
   </head>
   <body>
-    <a class="skip-link" href="#main">Skip to content</a>
-    <header class="site-header">
-      <div class="container site-header-inner">
-        <a href="/" class="brand">leslie-angu</a>
+    <a class="skip-link" href="#main">SKIP TO CONTENT //</a>
+
+    <header class="topbar">
+      <div class="container topbar-inner">
+        <a href="/" class="brand" aria-label="Home">
+          <span class="brand-box">L</span>
+          <span class="brand-text">
+            LESLIE <span class="brand-sub">[DATA/DEV]</span>
+            <span class="brand-coord">NBO // -01°17'S 36°49'E</span>
+          </span>
+        </a>
         <nav aria-label="Main">
-          {nav.map((item) => <a href={item.href}>{item.label}</a>)}
+          {nav.map((item) => (
+            <a href={item.href}><span class="idx">[{item.n}]</span> {item.label}</a>
+          ))}
         </nav>
+        <div class="topbar-status">
+          <span class="beacon">OPEN FOR ROLES // DATA ENGINEERING</span>
+          <a class="btn compact" href="/#contact">CONNECT -&gt;</a>
+        </div>
       </div>
     </header>
+
     <main id="main">
       <slot />
     </main>
-    <footer class="site-footer">
+
+    <footer class="footer">
       <div class="container">
-        <span class="kicker">leslie-angu</span>
-        <p>Nairobi, Kenya · <a href="https://github.com/leslie-eng">GitHub</a> · <a href="https://www.linkedin.com/in/leslie-angu-00aa86341">LinkedIn</a></p>
+        <div class="footer-grid">
+          <span class="mono">LES.ANGU // PORTFOLIO SYS.VER.2.4</span>
+          <span class="mono">
+            [
+            <a href="https://github.com/leslie-eng" rel="noopener">GITHUB</a> //
+            <a href="https://www.linkedin.com/in/leslie-angu-00aa86341" rel="noopener">LINKEDIN</a> //
+            <a href="mailto:anguleslie7@gmail.com">EMAIL</a>
+            ]
+          </span>
+          <span class="mono">NBO LOCAL // UTC+3</span>
+          <span class="mono status">STATUS: <span class="lit">OPERATIONAL</span></span>
+        </div>
       </div>
     </footer>
   </body>
 </html>
 
 <style>
-  .site-header {
-    border-bottom: 1px solid var(--line);
-    background: color-mix(in srgb, var(--bg) 85%, transparent);
+  .topbar {
+    border-bottom: 1px solid var(--hairline);
+    background: var(--bg);
+    position: sticky;
+    top: 0;
+    z-index: 5;
   }
-  .site-header-inner {
+  .topbar-inner {
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: var(--space-3);
-    padding-block: var(--space-2);
+    padding-block: 0.75rem;
     flex-wrap: wrap;
   }
   .brand {
-    font-family: var(--font-mono);
-    color: var(--text);
-    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.625rem;
   }
+  .brand:hover { color: var(--text); }
+  .brand-box {
+    display: grid;
+    place-items: center;
+    width: 2rem;
+    height: 2rem;
+    border: 1px solid var(--accent);
+    color: var(--accent);
+    font-family: var(--font-display);
+    font-weight: 800;
+  }
+  .brand-text {
+    display: flex;
+    flex-direction: column;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+  }
+  .brand-sub { color: var(--accent); }
+  .brand-coord { color: var(--text-muted); font-weight: 400; font-size: 0.625rem; }
   nav {
     display: flex;
-    gap: var(--space-3);
+    gap: var(--space-2);
     flex-wrap: wrap;
   }
   nav a {
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
     color: var(--text-muted);
-    font-size: 0.9375rem;
   }
-  nav a:hover {
-    color: var(--accent);
-    text-decoration: none;
+  nav a:hover { color: var(--text); }
+  nav a .idx { color: var(--accent); }
+  .topbar-status {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    flex-wrap: wrap;
   }
-  .site-footer {
-    border-top: 1px solid var(--line);
-    padding-block: var(--space-4);
+  .btn.compact { padding: 0.5rem 0.875rem; }
+  .footer {
+    border-top: 1px solid var(--hairline);
+    padding-block: var(--space-3);
+  }
+  .footer-grid {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--space-2);
+    flex-wrap: wrap;
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
     color: var(--text-muted);
-    font-size: 0.9375rem;
   }
+  .footer-grid a { color: var(--text-muted); }
+  .footer-grid a:hover { color: var(--accent); }
+  .lit { color: var(--accent); }
 </style>

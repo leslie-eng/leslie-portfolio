@@ -3,21 +3,32 @@ import Base from "../layouts/Base.astro";
 ---
 
 <Base title="404 — Leslie Angu">
-  <section class="section lost">
+  <section class="lost">
     <div class="container">
-      <p class="kicker">404 · signal lost</p>
-      <h1>This route returned nothing.</h1>
-      <p><a href="/">Back to base</a></p>
+      <div class="section-head">
+        <span><span class="idx">[404]</span> ERROR // SIGNAL LOST</span>
+        <span>ERRNO // ROUTE_NOT_FOUND</span>
+      </div>
+      <div class="lost-body">
+        <h1 class="display-title">ROUTE RETURNED<br />NO DATA.</h1>
+        <p class="mono trace">$ GET /* — 404 NOT FOUND · TRACE COMPLETE · NO SIGNAL ON THIS ROUTE</p>
+        <a class="btn" href="/">[EXECUTE] RETURN TO BASE -&gt;</a>
+      </div>
     </div>
   </section>
 </Base>
 
 <style>
-  .lost {
-    padding-block: var(--space-6);
+  .lost-body {
+    padding-block: var(--space-5);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    align-items: flex-start;
   }
-  h1 {
-    font-size: clamp(1.75rem, 5vw, 3rem);
-    margin: var(--space-2) 0 var(--space-3);
+  .trace {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    letter-spacing: 0.08em;
   }
 </style>

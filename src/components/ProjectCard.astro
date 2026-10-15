@@ -3,120 +3,134 @@ import type { CollectionEntry } from "astro:content";
 
 interface Props {
   project: CollectionEntry<"projects">;
-  featured?: boolean;
 }
 
-const { project, featured = false } = Astro.props;
+const { project } = Astro.props;
 const href = `/projects/${project.id}/`;
+const idx = String(project.data.order).padStart(3, "0");
+const flagship = project.data.order === 1;
+const discipline = project.data.discipline ?? "DATA ENGINEERING";
 ---
 
-<article class:list={["card", { featured }]}>
-  <p class="kicker">
+<article class:list={["ledger-card", { flagship }]}>
+  <div class="lc-main">
+    <p class="lc-kicker mono">
+      <span class="idx">[{idx}]</span> {discipline}
+      {flagship && <span class="chip lit">FLAGSHIP</span>}
+    </p>
+    <h3 class="lc-title"><a href={href}>{project.data.title}</a></h3>
+
     {
-      project.data.order === 1 ? (
-        <span>
-          Flagship · Case Study {String(project.data.order).padStart(2, "0")}
-        </span>
-      ) : (
-        <span>Case Study {String(project.data.order).padStart(2, "0")}</span>
+      project.data.impact && (
+        <div class="lc-outcome">
+          <p class="mono outcome-label">MEASURED OUTCOME //</p>
+          <p class="outcome-text">{project.data.impact}</p>
+        </div>
       )
     }
-  </p>
-  <h3><a href={href}>{project.data.title}</a></h3>
-  <p class="summary">{project.data.summary}</p>
-  <ul class="stack" role="list">
-    {project.data.stack.map((s) => <li>{s}</li>)}
-  </ul>
-  <p class="evidence">
-    <span class="evidence-label">Evidence:</span>
-    {
-      project.data.evidence.map((e) =>
-        e.pending ? (
-          <span class="badge pending">{e.label}</span>
-        ) : (
-          <a class="badge" href={e.url} rel="noopener">
-            {e.label}
-          </a>
+
+    <ul class="lc-chips" role="list">
+      {project.data.stack.map((s) => <li class="chip">{s}</li>)}
+    </ul>
+
+    <div class="lc-evidence mono">
+      <span class="ev-label">EVIDENCE //</span>
+      {
+        project.data.evidence.map((e) =>
+          e.pending ? (
+            <span class="chip pending">{e.label}</span>
+          ) : (
+            <a class="chip lit" href={e.url} rel="noopener">
+              {e.label}
+            </a>
+          )
         )
-      )
-    }
-  </p>
+      }
+    </div>
+  </div>
+
+  <div class="lc-side">
+    <div class="lc-fig mono">
+      SPEC VIEW<br />
+      {flagship ? "FIELD INSTALLATION" : "SYSTEM SCHEMATIC"}<br />
+      <span class="dim">AWAITING ARTWORK</span>
+    </div>
+    <a class="lc-cta mono" href={href}>VIEW CASE STUDY -&gt;</a>
+  </div>
 </article>
 
 <style>
-  .card {
+  .ledger-card {
+    display: grid;
+    grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr);
+    gap: var(--space-3);
+    border: 1px solid var(--hairline);
     background: var(--surface);
-    border: 1px solid var(--line);
-    border-radius: var(--radius);
     padding: var(--space-3);
+  }
+  .ledger-card + .ledger-card { margin-top: var(--space-2); }
+  .ledger-card.flagship { border-color: var(--accent); }
+  .mono { font-family: var(--font-mono); }
+
+  .lc-kicker {
     display: flex;
-    flex-direction: column;
-    gap: var(--space-1);
-  }
-  .card.featured {
-    border-color: var(--accent);
-  }
-  h3 {
-    margin: 0;
-    font-size: 1.375rem;
-  }
-  h3 a {
-    color: var(--text);
-  }
-  h3 a:hover {
-    color: var(--accent);
-    text-decoration: none;
-  }
-  .summary {
-    color: var(--text-muted);
-    margin: 0;
-  }
-  .stack {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--space-1);
-    padding: 0;
-    margin: 0;
-    list-style: none;
-  }
-  .stack li {
-    font-family: var(--font-mono);
-    font-size: 0.75rem;
-    color: var(--text-muted);
-    border: 1px solid var(--line);
-    border-radius: 999px;
-    padding: 0.125rem 0.625rem;
-  }
-  .evidence {
-    margin: 0;
-    font-size: 0.875rem;
-    display: flex;
-    gap: var(--space-1);
     align-items: center;
+    gap: var(--space-1);
     flex-wrap: wrap;
-  }
-  .evidence-label {
-    font-family: var(--font-mono);
+    margin: 0 0 var(--space-1);
+    font-size: 0.6875rem;
+    letter-spacing: 0.12em;
     color: var(--text-muted);
-    font-size: 0.75rem;
     text-transform: uppercase;
-    letter-spacing: 0.1em;
   }
-  .badge {
-    font-family: var(--font-mono);
-    font-size: 0.75rem;
+  .idx { color: var(--accent); }
+  .lc-title { font-size: clamp(1.5rem, 3vw, 2.125rem); font-weight: 800; }
+  .lc-title a { color: var(--text); }
+  .lc-title a:hover { color: var(--accent); }
+
+  .lc-outcome {
+    border-left: 2px solid var(--accent);
+    background: var(--surface-raised);
+    padding: var(--space-1) var(--space-2);
+    margin-block: var(--space-2);
+    max-width: 52ch;
+  }
+  .outcome-label { margin: 0 0 0.25rem; font-size: 0.625rem; letter-spacing: 0.14em; color: var(--accent); }
+  .outcome-text { margin: 0; font-size: 0.9375rem; color: var(--text); }
+
+  .lc-chips { display: flex; flex-wrap: wrap; gap: var(--space-1); padding: 0; margin: var(--space-2) 0 0; list-style: none; }
+  .lc-evidence { display: flex; align-items: center; gap: var(--space-1); flex-wrap: wrap; margin-top: var(--space-2); }
+  .ev-label { font-size: 0.625rem; letter-spacing: 0.14em; color: var(--text-muted); }
+  .chip.pending { border-style: dashed; }
+
+  .lc-side { display: flex; flex-direction: column; gap: var(--space-2); }
+  .lc-fig {
+    flex: 1;
+    border: 1px dashed var(--hairline-bright);
+    display: grid;
+    place-items: center;
+    text-align: center;
+    padding: var(--space-3);
+    font-size: 0.6875rem;
+    letter-spacing: 0.12em;
+    color: var(--text-muted);
+    text-transform: uppercase;
+  }
+  .lc-fig .dim { opacity: 0.6; font-size: 0.625rem; }
+  .lc-cta {
+    display: block;
+    text-align: center;
     border: 1px solid var(--accent);
     color: var(--accent);
-    border-radius: var(--radius);
-    padding: 0.125rem 0.5rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    padding: 0.875rem;
+    text-transform: uppercase;
   }
-  .badge:hover {
-    text-decoration: none;
-    background: var(--accent-dim);
-  }
-  .badge.pending {
-    border-color: var(--line);
-    color: var(--text-muted);
-    border-style: dashed;
+  .lc-cta:hover { background: var(--accent); color: var(--accent-ink); }
+
+  @media (max-width: 56rem) {
+    .ledger-card { grid-template-columns: 1fr; }
   }
 </style>
