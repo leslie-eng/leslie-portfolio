@@ -9,7 +9,7 @@ const { project } = Astro.props;
 const href = `/projects/${project.id}/`;
 const idx = String(project.data.order).padStart(3, "0");
 const flagship = project.data.order === 1;
-const discipline = project.data.discipline ?? "DATA ENGINEERING";
+const discipline = project.data.discipline;
 ---
 
 <article class:list={["ledger-card", { flagship }]}>

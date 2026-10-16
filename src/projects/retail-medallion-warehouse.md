@@ -29,4 +29,4 @@ Raw e-commerce data (orders, customers, payments, geolocation) is only useful fo
 
 ## Outcome
 
-A warehouse where "what did revenue look like per state, per category?" is one query instead of a archaeology project — plus a pipeline structure that transfers directly to production ELT work.
+A warehouse where "what did revenue look like per state, per category?" is one query instead of an archaeology project — plus a pipeline structure that transfers directly to production ELT work.

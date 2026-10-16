@@ -1,6 +1,5 @@
 // Build-output gate: the one seam (per spec). Asserts on emitted HTML only.
-import { access, readFile, readdir } from "node:fs/promises";
-import { open } from "node:fs/promises";
+import { access, open, readFile } from "node:fs/promises";
 import { join } from "node:path";
 
 const dist = join(process.cwd(), "dist");
