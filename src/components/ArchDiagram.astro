@@ -66,7 +66,8 @@ const summary = `Architecture of ${title}: ` + diagram.edges.map((e) => `${pos.g
 
 <svg
   viewBox={`0 0 ${width} ${height}`}
-  class="block h-auto w-full"
+  class="mx-auto block h-auto w-full"
+  style={compact ? `max-width: ${Math.round(width * 0.95)}px` : undefined}
   role={compact ? undefined : "img"}
   aria-hidden={compact ? "true" : undefined}
   aria-label={compact ? undefined : summary}

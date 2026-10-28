@@ -13,8 +13,8 @@ const href = `/projects/${project.id}/`;
 const outcome = outcomeOverrides[project.id] ?? data.outcome;
 ---
 
-<article class="group grid gap-6 rounded-2xl border border-line bg-surface p-5 transition-colors hover:border-line-strong sm:p-7 lg:grid-cols-[minmax(0,1fr)_minmax(0,0.9fr)] lg:items-center">
-  <div class="min-w-0">
+<article class="group grid gap-6 rounded-2xl border border-line bg-surface p-5 transition-colors hover:border-line-strong sm:p-7">
+  <div class="min-w-0 max-w-3xl">
     <p class="label">{data.discipline}</p>
     <h3 class="mt-2 text-xl font-bold sm:text-2xl">
       <a href={href} class="hover:text-accent">{data.title}</a>
@@ -41,7 +41,7 @@ const outcome = outcomeOverrides[project.id] ?? data.outcome;
     </div>
   </div>
 
-  <a href={href} class="block overflow-hidden rounded-xl border border-line bg-bg p-3" tabindex="-1" aria-hidden="true">
+  <a href={href} class="block overflow-hidden rounded-xl border border-line bg-bg p-3 sm:p-5" tabindex="-1" aria-hidden="true">
     <ArchDiagram diagram={data.diagram} title={data.title} compact />
   </a>
 </article>
