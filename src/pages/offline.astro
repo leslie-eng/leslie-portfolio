@@ -1,0 +1,19 @@
+---
+// Served by the service worker when a page isn't cached and the network is down.
+import Base from "../layouts/Base.astro";
+import { profile } from "../../content/profile";
+---
+
+<Base title={`Offline | ${profile.name}`} noindex>
+  <section class="container-page py-24 sm:py-32">
+    <p class="label">Offline</p>
+    <h1 class="mt-3 text-3xl font-bold sm:text-5xl">You're offline.</h1>
+    <p class="mt-4 max-w-xl text-lg text-muted">
+      This page hasn't been saved for offline reading yet. Pages you've already opened, and the résumé, still work.
+    </p>
+    <div class="mt-8 flex flex-wrap gap-3">
+      <a href="/" class="btn-primary">Home page</a>
+      <a href="/resume.pdf" class="btn-secondary">Résumé (PDF)</a>
+    </div>
+  </section>
+</Base>

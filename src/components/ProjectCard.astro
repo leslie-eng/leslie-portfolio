@@ -1,136 +1,47 @@
 ---
 import type { CollectionEntry } from "astro:content";
+import ArchDiagram from "./ArchDiagram.astro";
+import { outcomeOverrides } from "../../content/profile";
 
 interface Props {
   project: CollectionEntry<"projects">;
 }
 
 const { project } = Astro.props;
+const { data } = project;
 const href = `/projects/${project.id}/`;
-const idx = String(project.data.order).padStart(3, "0");
-const flagship = project.data.order === 1;
-const discipline = project.data.discipline;
+const outcome = outcomeOverrides[project.id] ?? data.outcome;
 ---
 
-<article class:list={["ledger-card", { flagship }]}>
-  <div class="lc-main">
-    <p class="lc-kicker mono">
-      <span class="idx">[{idx}]</span> {discipline}
-      {flagship && <span class="chip lit">FLAGSHIP</span>}
-    </p>
-    <h3 class="lc-title"><a href={href}>{project.data.title}</a></h3>
+<article class="group grid gap-6 rounded-2xl border border-line bg-surface p-5 transition-colors hover:border-line-strong sm:p-7 lg:grid-cols-[minmax(0,1fr)_minmax(0,0.9fr)] lg:items-center">
+  <div class="min-w-0">
+    <p class="label">{data.discipline}</p>
+    <h3 class="mt-2 text-xl font-bold sm:text-2xl">
+      <a href={href} class="hover:text-accent">{data.title}</a>
+    </h3>
+    <p class="mt-2 text-muted">{data.problem}</p>
 
-    {
-      project.data.impact && (
-        <div class="lc-outcome">
-          <p class="mono outcome-label">MEASURED OUTCOME //</p>
-          <p class="outcome-text">{project.data.impact}</p>
-        </div>
-      )
-    }
+    <div class="mt-4 rounded-lg border-l-2 border-accent bg-accent-soft px-4 py-3">
+      <p class="label !text-accent">Outcome</p>
+      <p class="mt-1 font-medium">{outcome}</p>
+    </div>
 
-    <ul class="lc-chips" role="list">
-      {project.data.stack.map((s) => <li class="chip">{s}</li>)}
+    <ul class="mt-4 flex flex-wrap gap-2" aria-label="Stack">
+      {data.tags.map((t) => <li class="tag">{t}</li>)}
     </ul>
 
-    <div class="lc-evidence mono">
-      <span class="ev-label">EVIDENCE //</span>
-      {
-        project.data.evidence.map((e) =>
-          e.pending ? (
-            <span class="chip pending">{e.label}</span>
-          ) : (
-            <a class="chip lit" href={e.url} rel="noopener">
-              {e.label}
-            </a>
-          )
-        )
-      }
+    <div class="mt-5 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm font-semibold">
+      <a href={href} class="link">Case study<span class="sr-only">: {data.title}</span></a>
+      {data.links.live && (
+        <a href={data.links.live} class="link" rel="noopener">Live site<span class="sr-only">: {data.title}</span></a>
+      )}
+      {data.links.repo && (
+        <a href={data.links.repo} class="link" rel="noopener">Repo<span class="sr-only">: {data.title}</span></a>
+      )}
     </div>
   </div>
 
-  <div class="lc-side">
-    <div class="lc-fig mono">
-      SPEC VIEW<br />
-      {flagship ? "FIELD INSTALLATION" : "SYSTEM SCHEMATIC"}<br />
-      <span class="dim">AWAITING ARTWORK</span>
-    </div>
-    <a class="lc-cta mono" href={href}>VIEW CASE STUDY -&gt;</a>
-  </div>
+  <a href={href} class="block overflow-hidden rounded-xl border border-line bg-bg p-3" tabindex="-1" aria-hidden="true">
+    <ArchDiagram diagram={data.diagram} title={data.title} compact />
+  </a>
 </article>
-
-<style>
-  .ledger-card {
-    display: grid;
-    grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr);
-    gap: var(--space-3);
-    border: 1px solid var(--hairline);
-    background: var(--surface);
-    padding: var(--space-3);
-  }
-  .ledger-card + .ledger-card { margin-top: var(--space-2); }
-  .ledger-card.flagship { border-color: var(--accent); }
-  .mono { font-family: var(--font-mono); }
-
-  .lc-kicker {
-    display: flex;
-    align-items: center;
-    gap: var(--space-1);
-    flex-wrap: wrap;
-    margin: 0 0 var(--space-1);
-    font-size: 0.6875rem;
-    letter-spacing: 0.12em;
-    color: var(--text-muted);
-    text-transform: uppercase;
-  }
-  .idx { color: var(--accent); }
-  .lc-title { font-size: clamp(1.5rem, 3vw, 2.125rem); font-weight: 800; }
-  .lc-title a { color: var(--text); }
-  .lc-title a:hover { color: var(--accent); }
-
-  .lc-outcome {
-    border-left: 2px solid var(--accent);
-    background: var(--surface-raised);
-    padding: var(--space-1) var(--space-2);
-    margin-block: var(--space-2);
-    max-width: 52ch;
-  }
-  .outcome-label { margin: 0 0 0.25rem; font-size: 0.625rem; letter-spacing: 0.14em; color: var(--accent); }
-  .outcome-text { margin: 0; font-size: 0.9375rem; color: var(--text); }
-
-  .lc-chips { display: flex; flex-wrap: wrap; gap: var(--space-1); padding: 0; margin: var(--space-2) 0 0; list-style: none; }
-  .lc-evidence { display: flex; align-items: center; gap: var(--space-1); flex-wrap: wrap; margin-top: var(--space-2); }
-  .ev-label { font-size: 0.625rem; letter-spacing: 0.14em; color: var(--text-muted); }
-  .chip.pending { border-style: dashed; }
-
-  .lc-side { display: flex; flex-direction: column; gap: var(--space-2); }
-  .lc-fig {
-    flex: 1;
-    border: 1px dashed var(--hairline-bright);
-    display: grid;
-    place-items: center;
-    text-align: center;
-    padding: var(--space-3);
-    font-size: 0.6875rem;
-    letter-spacing: 0.12em;
-    color: var(--text-muted);
-    text-transform: uppercase;
-  }
-  .lc-fig .dim { opacity: 0.6; font-size: 0.625rem; }
-  .lc-cta {
-    display: block;
-    text-align: center;
-    border: 1px solid var(--accent);
-    color: var(--accent);
-    font-size: 0.75rem;
-    font-weight: 700;
-    letter-spacing: 0.12em;
-    padding: 0.875rem;
-    text-transform: uppercase;
-  }
-  .lc-cta:hover { background: var(--accent); color: var(--accent-ink); }
-
-  @media (max-width: 56rem) {
-    .ledger-card { grid-template-columns: 1fr; }
-  }
-</style>

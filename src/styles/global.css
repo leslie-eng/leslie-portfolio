@@ -1,220 +1,142 @@
-/* Technical Brutalism — tokens from stitch_data_engineer_portfolio_system/technical_brutalism/DESIGN.md.
-   Defined once. Sharp corners, hairline structure, acid-lime accent, no shadows. */
-@import "@fontsource/syne/700.css";
-@import "@fontsource/syne/800.css";
-@import "@fontsource/manrope/400.css";
-@import "@fontsource/manrope/500.css";
-@import "@fontsource/manrope/700.css";
-@import "@fontsource-variable/jetbrains-mono";
+@import "tailwindcss";
+@import "@fontsource-variable/inter/wght.css";
+@import "@fontsource-variable/jetbrains-mono/wght.css";
 
-:root {
-  --bg: #0a0b0e;
-  --surface: #0d0f12;
-  --surface-raised: #13161b;
-  --text: #f3f4f6;
-  --text-muted: #8e95a5;
+/* Theme is chosen before paint by the inline script in Base.astro:
+   saved choice → prefers-color-scheme → dark. */
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
+:root,
+[data-theme="dark"] {
+  --bg: #0b0c0f;
+  --surface: #121419;
+  --surface-2: #181b22;
+  --fg: #f2f3f5;
+  --muted: #a3aab8;
+  --line: #262a33;
+  --line-strong: #3a404c;
+  /* lime: text-safe accent and solid fill */
   --accent: #d4ff00;
-  --accent-ink: #0a0b0e;
-  --hairline: #1f242d;
-  --hairline-bright: #8e95a5;
-
-  --font-display: "Syne", system-ui, sans-serif;
-  --font-body: "Manrope", system-ui, sans-serif;
-  --font-mono: "JetBrains Mono Variable", "JetBrains Mono", ui-monospace, monospace;
-
-  --space-1: 0.5rem;
-  --space-2: 1rem;
-  --space-3: 1.5rem;
-  --space-4: 2.5rem;
-  --space-5: 4rem;
-  --space-6: 6rem;
-
-  --measure: 68ch;
-  --container: 76rem;
-  --radius: 0; /* the system is sharp. there are no radii. */
-}
-
-* {
-  box-sizing: border-box;
-}
-
-html {
+  --accent-fill: #d4ff00;
+  --accent-ink: #0b0c0f;
+  --accent-soft: rgb(212 255 0 / 0.1);
   color-scheme: dark;
-  scroll-behavior: smooth;
 }
 
-body {
-  margin: 0;
-  background-color: var(--bg);
-  color: var(--text);
-  font-family: var(--font-body);
-  font-size: 1rem;
-  line-height: 1.6;
-  -webkit-font-smoothing: antialiased;
+[data-theme="light"] {
+  --bg: #fbfbf8;
+  --surface: #ffffff;
+  --surface-2: #f2f3ee;
+  --fg: #111318;
+  --muted: #4a5160;
+  --line: #e2e4dc;
+  --line-strong: #c4c8bc;
+  /* lime is unreadable as text on white — use a deep olive for text, keep lime for fills */
+  --accent: #4a6200;
+  --accent-fill: #c8f000;
+  --accent-ink: #111318;
+  --accent-soft: rgb(200 240 0 / 0.22);
+  color-scheme: light;
 }
 
-h1, h2, h3 {
-  font-family: var(--font-display);
-  line-height: 1.05;
-  letter-spacing: -0.02em;
-  text-wrap: balance;
-  margin: 0;
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-fg: var(--fg);
+  --color-muted: var(--muted);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-accent: var(--accent);
+  --color-accent-fill: var(--accent-fill);
+  --color-accent-ink: var(--accent-ink);
+  --color-accent-soft: var(--accent-soft);
+
+  --font-sans: "Inter Variable", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "JetBrains Mono Variable", ui-monospace, SFMono-Regular, Menlo, monospace;
 }
 
-a {
-  color: var(--text);
-  text-decoration: none;
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 5rem;
+    -webkit-text-size-adjust: 100%;
+  }
+  body {
+    @apply bg-bg text-fg font-sans antialiased;
+    font-size: 1.0625rem; /* 17px */
+    line-height: 1.65;
+  }
+  h1, h2, h3 {
+    text-wrap: balance;
+    letter-spacing: -0.02em;
+  }
+  ::selection {
+    background: var(--accent-fill);
+    color: var(--accent-ink);
+  }
+  :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    *, *::before, *::after { transition: none !important; animation: none !important; }
+  }
 }
 
-a:hover {
-  color: var(--accent);
+@utility btn {
+  @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-lg px-5 py-2.5 text-base font-semibold transition-colors;
+}
+@utility link {
+  @apply text-accent underline decoration-1 underline-offset-4 hover:decoration-2;
 }
 
-::selection {
-  background: var(--accent);
-  color: var(--accent-ink);
-}
+@layer components {
+  .container-page {
+    @apply mx-auto w-full max-w-6xl px-5 sm:px-8;
+  }
+  /* small monospace label — the only place mono is used */
+  .label {
+    @apply font-mono text-xs tracking-wide text-muted;
+  }
+  .tag {
+    @apply inline-flex items-center rounded-md border border-line bg-surface-2 px-2 py-0.5 font-mono text-xs text-fg;
+  }
+  .btn-primary {
+    @apply btn bg-accent-fill text-accent-ink hover:brightness-95;
+  }
+  .btn-secondary {
+    @apply btn border border-line-strong text-fg hover:border-accent hover:text-accent;
+  }
+  .section {
+    @apply border-t border-line py-16 sm:py-20;
+  }
+  .section-title {
+    @apply text-2xl font-bold sm:text-3xl;
+  }
 
-/* ————— structural utilities ————— */
-
-.container {
-  max-width: var(--container);
-  margin-inline: auto;
-  padding-inline: var(--space-3);
-}
-
-/* ledger section header: [002] // NAME — monospace, hairline-underlined */
-.section-head {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: var(--space-2);
-  border-bottom: 1px solid var(--hairline);
-  padding-block: 0.75rem;
-  font-family: var(--font-mono);
-  font-size: 0.75rem;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--text-muted);
-  flex-wrap: wrap;
-}
-
-.section-head .idx {
-  color: var(--accent);
-}
-
-.section-body {
-  padding-block: var(--space-4);
-  border-bottom: 1px solid var(--hairline);
-}
-
-.display-title {
-  font-family: var(--font-display);
-  font-weight: 800;
-  font-size: clamp(2rem, 5.5vw, 3.75rem);
-  letter-spacing: -0.03em;
-}
-
-/* monospaced label row: PARAM // VALUE */
-.spec-row {
-  display: flex;
-  justify-content: space-between;
-  gap: var(--space-2);
-  font-family: var(--font-mono);
-  font-size: 0.75rem;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  border-bottom: 1px dotted var(--hairline);
-  padding-block: 0.5rem;
-}
-
-.spec-row dt { color: var(--text-muted); }
-.spec-row dd { margin: 0; color: var(--text); text-align: right; }
-
-/* terminal button: solid lime or wireframe, always sharp */
-.btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-family: var(--font-mono);
-  font-size: 0.75rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  padding: 0.875rem 1.375rem;
-  border: 1px solid var(--accent);
-  background: var(--accent);
-  color: var(--accent-ink);
-}
-
-.btn:hover {
-  background: var(--text);
-  border-color: var(--text);
-  color: var(--accent-ink);
-}
-
-.btn.ghost {
-  background: transparent;
-  border: 1px solid var(--hairline);
-  color: var(--text);
-}
-
-.btn.ghost:hover {
-  border-color: var(--accent);
-  color: var(--accent);
-  background: transparent;
-}
-
-/* tag chip: monospace, hairline, sharp */
-.chip {
-  font-family: var(--font-mono);
-  font-size: 0.6875rem;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  border: 1px solid var(--hairline);
-  color: var(--text-muted);
-  padding: 0.25rem 0.5rem;
-  white-space: nowrap;
-}
-
-.chip.lit {
-  border-color: var(--accent);
-  color: var(--accent);
-}
-
-/* status beacon: unrounded square + mono label */
-.beacon {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-family: var(--font-mono);
-  font-size: 0.6875rem;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: var(--text-muted);
-}
-
-.beacon::before {
-  content: "";
-  width: 6px;
-  height: 6px;
-  background: var(--accent);
-  display: inline-block;
-  flex: none;
-}
-
-.skip-link {
-  position: absolute;
-  left: -9999px;
-  top: 0;
-  background: var(--accent);
-  color: var(--accent-ink);
-  padding: var(--space-1) var(--space-2);
-  z-index: 10;
-  font-family: var(--font-mono);
-}
-
-.skip-link:focus {
-  left: var(--space-2);
-  top: var(--space-2);
+  /* MDX case-study prose */
+  .prose-cs {
+    @apply max-w-[68ch] text-fg;
+  }
+  .prose-cs h2 {
+    @apply mt-12 mb-4 text-2xl font-bold;
+  }
+  .prose-cs p {
+    @apply my-4 text-muted;
+  }
+  .prose-cs ul {
+    @apply my-4 list-disc space-y-3 pl-5 text-muted marker:text-accent;
+  }
+  .prose-cs strong {
+    @apply font-semibold text-fg;
+  }
+  .prose-cs a {
+    @apply link;
+  }
+  .prose-cs code {
+    @apply rounded bg-surface-2 px-1.5 py-0.5 font-mono text-[0.85em] text-fg;
+  }
 }

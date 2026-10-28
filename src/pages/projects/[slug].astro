@@ -1,0 +1,134 @@
+---
+import { getCollection, render, type CollectionEntry } from "astro:content";
+import Base from "../../layouts/Base.astro";
+import ArchDiagram from "../../components/ArchDiagram.astro";
+import { profile, projectMetrics, outcomeOverrides, screenshots } from "../../../content/profile";
+
+export async function getStaticPaths() {
+  const all = (await getCollection("projects")).sort((a, b) => a.data.order - b.data.order);
+  return all.map((project, i) => ({
+    params: { slug: project.id },
+    props: { project, next: all[(i + 1) % all.length] },
+  }));
+}
+
+interface Props {
+  project: CollectionEntry<"projects">;
+  next: CollectionEntry<"projects">;
+}
+
+const { project, next } = Astro.props;
+const { data } = project;
+const { Content } = await render(project);
+
+const outcome = outcomeOverrides[project.id] ?? data.outcome;
+// Verified numbers from frontmatter, plus any TODO(me) metrics Leslie has filled in.
+const results = [
+  ...data.results,
+  ...(projectMetrics[project.id] ?? []).flatMap((m) => (m.value ? [{ label: m.label, value: m.value }] : [])),
+];
+const shots = screenshots[project.id] ?? [];
+const nodeCols = Math.max(...data.diagram.nodes.map((n) => n.col)) + 1;
+---
+
+<Base
+  title={`${data.title} — case study | ${profile.name}`}
+  description={`${data.problem} ${outcome}`}
+  ogImage={project.id}
+  type="article"
+>
+  <article class="container-page pt-10 pb-20 sm:pt-14">
+    <a href="/#projects" class="text-sm font-semibold text-muted hover:text-accent">← All projects</a>
+
+    <header class="mt-6 max-w-3xl">
+      <p class="label">{data.discipline}</p>
+      <h1 class="mt-2 text-3xl font-bold sm:text-5xl">{data.title}</h1>
+    </header>
+
+    <!-- TL;DR -->
+    <section aria-labelledby="tldr" class="mt-8 rounded-2xl border border-line bg-surface p-6 sm:p-8">
+      <h2 id="tldr" class="label !text-accent">TL;DR</h2>
+      <dl class="mt-4 grid gap-5 sm:grid-cols-2">
+        <div><dt class="label">Problem</dt><dd class="mt-1">{data.problem}</dd></div>
+        <div><dt class="label">My role</dt><dd class="mt-1">{data.role}</dd></div>
+        <div><dt class="label">Outcome</dt><dd class="mt-1 font-medium">{outcome}</dd></div>
+        <div>
+          <dt class="label">Stack</dt>
+          <dd class="mt-2">
+            <ul class="flex flex-wrap gap-1.5">{data.stack.map((s) => <li class="tag">{s}</li>)}</ul>
+          </dd>
+        </div>
+      </dl>
+      <div class="mt-6 flex flex-wrap gap-3">
+        {data.links.live && <a href={data.links.live} class="btn-primary" rel="noopener">Live site</a>}
+        {data.links.repo && <a href={data.links.repo} class={data.links.live ? "btn-secondary" : "btn-primary"} rel="noopener">View repo</a>}
+      </div>
+    </section>
+
+    <!-- Architecture -->
+    <section aria-labelledby="arch" class="mt-14">
+      <h2 id="arch" class="text-2xl font-bold">Architecture</h2>
+      <div class="mt-5 overflow-x-auto rounded-2xl border border-line bg-surface p-4 sm:p-6">
+        <div style={`min-width: ${nodeCols * 130}px`}>
+          <ArchDiagram diagram={data.diagram} title={data.title} />
+        </div>
+      </div>
+    </section>
+
+    <!-- Approach + Data quality & testing (MDX body) -->
+    <div class="prose-cs mt-4">
+      <Content />
+    </div>
+
+    <!-- Results -->
+    {results.length > 0 && (
+      <section aria-labelledby="results" class="mt-14">
+        <h2 id="results" class="text-2xl font-bold">Results</h2>
+        <dl class="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          {results.map((r) => (
+            <div class="rounded-xl border border-line bg-surface p-5">
+              <dt class="label">{r.label}</dt>
+              <dd class="mt-1.5 text-lg font-semibold">{r.value}</dd>
+            </div>
+          ))}
+        </dl>
+      </section>
+    )}
+
+    <!-- Screenshots (only when real images exist) -->
+    {shots.length > 0 && (
+      <section aria-labelledby="shots" class="mt-14">
+        <h2 id="shots" class="text-2xl font-bold">Screenshots</h2>
+        <div class="mt-5 grid gap-6 md:grid-cols-2">
+          {shots.map((s) => (
+            <figure class="overflow-hidden rounded-xl border border-line bg-surface">
+              <img src={s.src} alt={s.alt} loading="lazy" decoding="async" class="w-full" />
+              <figcaption class="p-4 text-sm text-muted">{s.caption}</figcaption>
+            </figure>
+          ))}
+        </div>
+      </section>
+    )}
+
+    <!-- What I'd do next -->
+    <section aria-labelledby="next-steps" class="mt-14 max-w-[68ch]">
+      <h2 id="next-steps" class="text-2xl font-bold">What I'd do next</h2>
+      <ul class="mt-4 list-disc space-y-3 pl-5 text-muted marker:text-accent">
+        {data.next.map((n) => <li>{n}</li>)}
+      </ul>
+    </section>
+
+    <!-- Links -->
+    <nav aria-label="Project links" class="mt-16 flex flex-col gap-6 border-t border-line pt-8 sm:flex-row sm:items-center sm:justify-between">
+      <div class="flex flex-wrap gap-x-6 gap-y-2 font-semibold">
+        {data.links.live && <a href={data.links.live} class="link" rel="noopener">Live site</a>}
+        {data.links.repo && <a href={data.links.repo} class="link" rel="noopener">Source code</a>}
+        <a href="/#contact" class="link">Contact me</a>
+      </div>
+      <a href={`/projects/${next.id}/`} class="group text-right">
+        <span class="label block">Next case study</span>
+        <span class="font-semibold group-hover:text-accent">{next.data.title} →</span>
+      </a>
+    </nav>
+  </article>
+</Base>

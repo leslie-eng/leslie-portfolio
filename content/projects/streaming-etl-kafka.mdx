@@ -1,0 +1,63 @@
+---
+title: Streaming ETL — API to Kafka to Postgres
+order: 1
+discipline: Data engineering · Streaming
+problem: Continuously arriving API data needed a streaming path that keeps working when the consumer crashes or falls behind.
+outcome: Idempotent Kafka → Postgres sink — replayed messages create 0 duplicate rows, with 5 automatic retries on every producer task.
+role: Sole engineer — design, build and documentation
+tags: [Apache Kafka, Apache Airflow, PostgreSQL, Grafana, Docker]
+stack:
+  - Apache Kafka (KRaft mode)
+  - Apache Airflow 3
+  - PostgreSQL
+  - Grafana
+  - MinIO (S3-compatible)
+  - Python — confluent-kafka, psycopg2
+  - Docker Compose
+links:
+  repo: https://github.com/leslie-eng/ETL_001
+results:
+  - { label: "Pipeline hops", value: "4 — API → Kafka → Postgres → Grafana" }
+  - { label: "Duplicate rows on replay", value: "0 (primary key + ON CONFLICT DO NOTHING)" }
+  - { label: "Producer retries", value: "5 per task, 5-minute delay" }
+  - { label: "Kafka coordination", value: "KRaft — no ZooKeeper" }
+next:
+  - Commit Kafka offsets manually, after the Postgres commit, so a crash between the two can never drop a message.
+  - Add a dead-letter topic for records that fail to parse instead of logging and moving on.
+  - Validate messages against a schema (Avro + Schema Registry) at the producer.
+  - Chart consumer lag and insert rate in Grafana, not just table contents.
+  - Unit-test format_data and run the suite in CI.
+diagram:
+  nodes:
+    - { id: api, label: "randomuser.me", sub: "external API", col: 0, row: 0 }
+    - { id: af, label: "Airflow DAG", sub: "get → format → stream", col: 1, row: 0 }
+    - { id: kafka, label: "Kafka topic", sub: "users_created", col: 2, row: 0 }
+    - { id: cons, label: "Python consumer", sub: "postgres-sink-group", col: 3, row: 0 }
+    - { id: pg, label: "PostgreSQL", sub: "company_data", col: 4, row: 0 }
+    - { id: graf, label: "Grafana", sub: "live panels", col: 5, row: 0 }
+    - { id: s3, label: "MinIO (S3)", sub: "daily CSV export", col: 5, row: 1 }
+  edges:
+    - { from: api, to: af }
+    - { from: af, to: kafka }
+    - { from: kafka, to: cons }
+    - { from: cons, to: pg }
+    - { from: pg, to: graf }
+    - { from: pg, to: s3 }
+---
+
+## Approach
+
+Batch pipelines answer yesterday's questions. When data arrives continuously — device telemetry, user events, sensor readings — the pipeline needs a buffer between the thing producing data and the thing storing it.
+
+- **Produce.** An Airflow DAG pulls a record from an external API (randomuser.me stands in for any real feed), reshapes it into a flat row with a UUID key, and publishes it to the `users_created` Kafka topic. Fetching, formatting and publishing are three separate tasks, so each one can be retried by itself.
+- **Buffer.** Kafka, running in KRaft mode, sits between producer and consumer. The consumer can crash, redeploy or lag without the producer noticing and without losing the stream.
+- **Consume.** A standalone Python consumer in its own consumer group writes each message into a PostgreSQL table, creating the table on startup if it is missing.
+- **Observe and export.** Grafana reads the table directly, so throughput and contents are visible as the data arrives. A second daily DAG exports the table to MinIO (S3-compatible) as a dated CSV.
+
+## Data quality & testing
+
+- **Idempotent sink.** The target table has a primary key, and every insert uses `ON CONFLICT (id) DO NOTHING`. Replaying the topic or re-running the DAG cannot create duplicate rows.
+- **Retries.** Every Airflow task inherits `retries: 5` with a 5-minute delay, so a flaky upstream API heals itself instead of paging someone.
+- **Failure isolation.** The consumer commits per message and rolls back on any error, so one malformed record cannot poison the rows around it.
+- **Replay from the start.** `auto.offset.reset: earliest` means a brand-new consumer group reads the topic from the beginning instead of silently skipping history.
+- **Honest gap.** There is no automated test suite yet — that's the first item below.

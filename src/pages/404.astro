@@ -1,34 +1,16 @@
 ---
 import Base from "../layouts/Base.astro";
+import { profile } from "../../content/profile";
 ---
 
-<Base title="404 — Leslie Angu">
-  <section class="lost">
-    <div class="container">
-      <div class="section-head">
-        <span><span class="idx">[404]</span> ERROR // SIGNAL LOST</span>
-        <span>ERRNO // ROUTE_NOT_FOUND</span>
-      </div>
-      <div class="lost-body">
-        <h1 class="display-title">ROUTE RETURNED<br />NO DATA.</h1>
-        <p class="mono trace">$ GET /* — 404 NOT FOUND · TRACE COMPLETE · NO SIGNAL ON THIS ROUTE</p>
-        <a class="btn" href="/">[EXECUTE] RETURN TO BASE -&gt;</a>
-      </div>
+<Base title={`Page not found | ${profile.name}`} noindex>
+  <section class="container-page py-24 sm:py-32">
+    <p class="label">404</p>
+    <h1 class="mt-3 text-3xl font-bold sm:text-5xl">This page doesn't exist.</h1>
+    <p class="mt-4 max-w-xl text-lg text-muted">The link may be out of date. The projects and contact details are all on the home page.</p>
+    <div class="mt-8 flex flex-wrap gap-3">
+      <a href="/" class="btn-primary">Go to home page</a>
+      <a href="/#projects" class="btn-secondary">View projects</a>
     </div>
   </section>
 </Base>
-
-<style>
-  .lost-body {
-    padding-block: var(--space-5);
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-3);
-    align-items: flex-start;
-  }
-  .trace {
-    font-size: 0.75rem;
-    color: var(--text-muted);
-    letter-spacing: 0.08em;
-  }
-</style>

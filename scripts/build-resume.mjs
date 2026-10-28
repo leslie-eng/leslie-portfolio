@@ -1,10 +1,10 @@
-// Renders the Resume (src/resume-data.mjs) to a text-extractable PDF at
+// Renders the Resume (content/resume.mjs) to a text-extractable PDF at
 // public/resume.pdf. ATS-friendly: standard Helvetica, selectable text, no tables.
 import PDFDocument from "pdfkit";
 import { createWriteStream } from "node:fs";
 import { mkdir } from "node:fs/promises";
 import { dirname, join } from "node:path";
-import { resume } from "../src/resume-data.mjs";
+import { resume } from "../content/resume.mjs";
 
 const outPath = join(process.cwd(), "public", "resume.pdf");
 await mkdir(dirname(outPath), { recursive: true });

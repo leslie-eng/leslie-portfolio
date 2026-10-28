@@ -1,156 +1,157 @@
 ---
 import "../styles/global.css";
+import { site, profile, resume } from "../../content/profile";
 
 interface Props {
   title: string;
   description?: string;
+  /** Slug of the generated Open Graph image under /og/. */
+  ogImage?: string;
+  type?: "website" | "article";
+  noindex?: boolean;
 }
 
-const { title, description = "Leslie Angu — data engineer and founder of Kinetic Kraft Robotics. Case studies from the field to the warehouse." } = Astro.props;
+const { title, description = site.description, ogImage = "home", type = "website", noindex = false } = Astro.props;
+const canonical = new URL(Astro.url.pathname, site.url).href;
+const ogUrl = new URL(`/og/${ogImage}.png`, site.url).href;
+
 const nav = [
-  { n: "01", href: "/#system", label: "System" },
-  { n: "02", href: "/#projects", label: "Projects" },
-  { n: "03", href: "/#skills", label: "Skills" },
-  { n: "04", href: "/#about", label: "About" },
-  { n: "05", href: "/#contact", label: "Contact" },
+  { href: "/#projects", label: "Projects" },
+  { href: "/#experience", label: "Experience" },
+  { href: "/#skills", label: "Skills" },
+  { href: "/#about", label: "About" },
+  { href: "/#contact", label: "Contact" },
 ];
+
+const person = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  name: profile.name,
+  alternateName: profile.fullName,
+  jobTitle: profile.role,
+  url: site.url,
+  email: `mailto:${profile.email}`,
+  image: new URL("/og/home.png", site.url).href,
+  address: { "@type": "PostalAddress", addressLocality: "Nairobi", addressCountry: "KE" },
+  worksFor: { "@type": "Organization", name: "Afrineuron" },
+  alumniOf: { "@type": "CollegeOrUniversity", name: profile.education.school },
+  knowsAbout: ["Data engineering", "Apache Airflow", "Apache Kafka", "PostgreSQL", "AWS", "Data warehousing", "ETL"],
+  sameAs: [profile.github, profile.linkedin],
+};
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang="en" data-theme="dark">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="generator" content={Astro.generator} />
-    <meta name="description" content={description} />
     <title>{title}</title>
-  </head>
-  <body>
-    <a class="skip-link" href="#main">SKIP TO CONTENT //</a>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    {noindex && <meta name="robots" content="noindex" />}
 
-    <header class="topbar">
-      <div class="container topbar-inner">
-        <a href="/" class="brand" aria-label="Home">
-          <span class="brand-box">L</span>
-          <span class="brand-text">
-            LESLIE <span class="brand-sub">[DATA/DEV]</span>
-            <span class="brand-coord">NBO // -01°17'S 36°49'E</span>
-          </span>
+    <!-- Apply the saved or system theme before first paint (no flash). -->
+    <script is:inline>
+      (() => {
+        let t;
+        try { t = localStorage.getItem("theme"); } catch {}
+        if (t !== "light" && t !== "dark") t = matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark";
+        document.documentElement.dataset.theme = t;
+      })();
+    </script>
+
+    <meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#fbfbf8" media="(prefers-color-scheme: light)" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="/icons/icon-192.png" type="image/png" sizes="192x192" />
+    <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+
+    <meta property="og:type" content={type} />
+    <meta property="og:site_name" content={profile.name} />
+    <meta property="og:locale" content={site.locale} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogUrl} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={`${profile.name} — ${profile.title}`} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogUrl} />
+
+    <script type="application/ld+json" is:inline set:html={JSON.stringify(person)} />
+  </head>
+  <body class="min-h-screen">
+    <a href="#main" class="sr-only z-50 rounded-md bg-accent-fill px-4 py-2 font-semibold text-accent-ink focus:not-sr-only focus:fixed focus:top-3 focus:left-3">
+      Skip to content
+    </a>
+
+    <header class="sticky top-0 z-40 border-b border-line bg-bg/90 backdrop-blur">
+      <div class="container-page flex h-16 items-center justify-between gap-4">
+        <a href="/" class="flex items-center gap-2.5 font-semibold">
+          <span class="grid size-8 place-items-center rounded-md bg-accent-fill font-mono text-sm font-bold text-accent-ink" aria-hidden="true">LA</span>
+          <span>{profile.name}</span>
         </a>
-        <nav aria-label="Main">
-          {nav.map((item) => (
-            <a href={item.href}><span class="idx">[{item.n}]</span> {item.label}</a>
-          ))}
+        <nav aria-label="Main" class="hidden md:block">
+          <ul class="flex items-center gap-6 text-sm text-muted">
+            {nav.map((n) => <li><a href={n.href} class="hover:text-fg">{n.label}</a></li>)}
+          </ul>
         </nav>
-        <div class="topbar-status">
-          <span class="beacon">OPEN FOR ROLES // DATA ENGINEERING</span>
-          <a class="btn compact" href="/#contact">CONNECT -&gt;</a>
+        <div class="flex items-center gap-2">
+          <a href={resume.href} class="hidden rounded-lg border border-line-strong px-3 py-1.5 text-sm font-semibold hover:border-accent hover:text-accent sm:inline-flex" download>Résumé</a>
+          <button id="theme-toggle" type="button" class="grid size-11 place-items-center rounded-lg text-muted hover:text-fg" aria-label="Switch to light theme">
+            <svg class="size-5 dark:hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z" /></svg>
+            <svg class="hidden size-5 dark:block" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="4" /><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4" /></svg>
+          </button>
         </div>
       </div>
+      <nav aria-label="Sections" class="border-t border-line md:hidden">
+        <ul class="container-page flex gap-5 overflow-x-auto py-2.5 text-sm whitespace-nowrap text-muted">
+          {nav.map((n) => <li><a href={n.href} class="hover:text-fg">{n.label}</a></li>)}
+        </ul>
+      </nav>
     </header>
 
     <main id="main">
       <slot />
     </main>
 
-    <footer class="footer">
-      <div class="container">
-        <div class="footer-grid">
-          <span class="mono">LES.ANGU // PORTFOLIO SYS.VER.2.4</span>
-          <span class="mono">
-            [
-            <a href="https://github.com/leslie-eng" rel="noopener">GITHUB</a> //
-            <a href="https://www.linkedin.com/in/leslie-angu-00aa86341" rel="noopener">LINKEDIN</a> //
-            <a href="mailto:anguleslie7@gmail.com">EMAIL</a>
-            ]
-          </span>
-          <span class="mono">NBO LOCAL // UTC+3</span>
-          <span class="mono status">STATUS: <span class="lit">OPERATIONAL</span></span>
-        </div>
+    <footer class="border-t border-line py-10">
+      <div class="container-page flex flex-col gap-4 text-sm text-muted sm:flex-row sm:items-center sm:justify-between">
+        <p>© {new Date().getFullYear()} {profile.name} · {profile.location}</p>
+        <ul class="flex flex-wrap gap-x-5 gap-y-2">
+          <li><a class="hover:text-fg" href={`mailto:${profile.email}`}>Email</a></li>
+          <li><a class="hover:text-fg" href={profile.github} rel="noopener">GitHub</a></li>
+          <li><a class="hover:text-fg" href={profile.linkedin} rel="noopener">LinkedIn</a></li>
+          <li><a class="hover:text-fg" href={resume.href} download>Résumé (PDF)</a></li>
+        </ul>
       </div>
     </footer>
+
+    <script>
+      const btn = document.getElementById("theme-toggle")!;
+      const root = document.documentElement;
+      const sync = () => {
+        const next = root.dataset.theme === "dark" ? "light" : "dark";
+        btn.setAttribute("aria-label", `Switch to ${next} theme`);
+        document
+          .querySelectorAll('meta[name="theme-color"]')
+          .forEach((m) => m.setAttribute("content", root.dataset.theme === "dark" ? "#0b0c0f" : "#fbfbf8"));
+      };
+      sync();
+      btn.addEventListener("click", () => {
+        root.dataset.theme = root.dataset.theme === "dark" ? "light" : "dark";
+        try { localStorage.setItem("theme", root.dataset.theme); } catch { /* private mode */ }
+        sync();
+      });
+
+      if (import.meta.env.PROD && "serviceWorker" in navigator) {
+        addEventListener("load", () => navigator.serviceWorker.register("/sw.js"));
+      }
+    </script>
   </body>
 </html>
-
-<style>
-  .topbar {
-    border-bottom: 1px solid var(--hairline);
-    background: var(--bg);
-    position: sticky;
-    top: 0;
-    z-index: 5;
-  }
-  .topbar-inner {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: var(--space-3);
-    padding-block: 0.75rem;
-    flex-wrap: wrap;
-  }
-  .brand {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.625rem;
-  }
-  .brand:hover { color: var(--text); }
-  .brand-box {
-    display: grid;
-    place-items: center;
-    width: 2rem;
-    height: 2rem;
-    border: 1px solid var(--accent);
-    color: var(--accent);
-    font-family: var(--font-display);
-    font-weight: 800;
-  }
-  .brand-text {
-    display: flex;
-    flex-direction: column;
-    font-family: var(--font-mono);
-    font-size: 0.75rem;
-    font-weight: 700;
-    letter-spacing: 0.08em;
-  }
-  .brand-sub { color: var(--accent); }
-  .brand-coord { color: var(--text-muted); font-weight: 400; font-size: 0.625rem; }
-  nav {
-    display: flex;
-    gap: var(--space-2);
-    flex-wrap: wrap;
-  }
-  nav a {
-    font-family: var(--font-mono);
-    font-size: 0.6875rem;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    color: var(--text-muted);
-  }
-  nav a:hover { color: var(--text); }
-  nav a .idx { color: var(--accent); }
-  .topbar-status {
-    display: flex;
-    align-items: center;
-    gap: var(--space-2);
-    flex-wrap: wrap;
-  }
-  .btn.compact { padding: 0.5rem 0.875rem; }
-  .footer {
-    border-top: 1px solid var(--hairline);
-    padding-block: var(--space-3);
-  }
-  .footer-grid {
-    display: flex;
-    justify-content: space-between;
-    gap: var(--space-2);
-    flex-wrap: wrap;
-    font-family: var(--font-mono);
-    font-size: 0.6875rem;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    color: var(--text-muted);
-  }
-  .footer-grid a { color: var(--text-muted); }
-  .footer-grid a:hover { color: var(--accent); }
-  .lit { color: var(--accent); }
-</style>

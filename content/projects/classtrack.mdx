@@ -1,0 +1,59 @@
+---
+title: ClassTrack — cohort performance engine
+order: 5
+discipline: Full-stack · Applied AI
+problem: Study cohorts fade quietly when nobody notices who has stopped submitting.
+outcome: 70 automated backend tests across 6 modules run in CI on every push, covering grading, quizzes and the weekly digest.
+role: Sole engineer — backend, frontend, scheduling and AI grading
+tags: [FastAPI, React 19, PostgreSQL, Claude API, Pyodide]
+stack:
+  - Python 3.13 + FastAPI + SQLAlchemy 2
+  - APScheduler
+  - PostgreSQL + Alembic
+  - React 19 + TypeScript + Tailwind v4
+  - TanStack Query
+  - Pyodide (in-browser Python)
+  - Claude API (rubric grading)
+  - GitHub Actions
+links:
+  repo: https://github.com/leslie-eng/class-performance-tracker
+results:
+  - { label: "Backend tests", value: "70 across 6 modules" }
+  - { label: "CI jobs", value: "2 — pytest; frontend lint + build" }
+  - { label: "Schema migrations", value: "5 Alembic revisions" }
+  - { label: "Quiz lengths", value: "10 / 20 / 30 minutes" }
+next:
+  - Land submission and quiz events in an analytics schema and track weekly cohort retention.
+  - Score grading consistency by re-grading a sample and measuring agreement.
+  - Add end-to-end browser tests for the Friday Drop flow.
+diagram:
+  nodes:
+    - { id: m, label: "Members", sub: "browser · Pyodide", col: 0, row: 0.5 }
+    - { id: web, label: "React 19 app", sub: "TanStack Query", col: 1, row: 0.5 }
+    - { id: api, label: "FastAPI", sub: "APScheduler jobs", col: 2, row: 0.5 }
+    - { id: pg, label: "PostgreSQL", sub: "Alembic", col: 3, row: 0 }
+    - { id: llm, label: "Claude API", sub: "rubric grading", col: 3, row: 1 }
+  edges:
+    - { from: m, to: web }
+    - { from: web, to: api }
+    - { from: api, to: pg }
+    - { from: api, to: llm }
+---
+
+## Approach
+
+Accountability needs teeth: visible streaks, real consequences, and something paying attention every day.
+
+- **Daily loop.** Members join challenges and submit code or a link to an article they wrote. Submissions earn points and streaks, and challenge and global leaderboards make progress public.
+- **AI grading with a rubric.** Article submissions are graded by Claude against an explicit rubric, so feedback is consistent from week to week.
+- **The Friday Drop.** A timezone-aware weekly digest at 08:00: notes, a vote on member-proposed projects, and a timed quiz of 10, 20 or 30 minutes. The first Friday of each month adds an interview-prep quiz per specialisation.
+- **Nudges.** A nightly job finds members falling behind and can send a WhatsApp nudge. Admins get a weekly digest of the cohort's health.
+- **In-browser code.** Python runs via Pyodide and JavaScript in a sandboxed worker, inside the member's browser and never on the server.
+
+## Data quality & testing
+
+- **70 pytest tests across 6 modules** — API, coding exercises, grading, learning materials, quizzes and the weekly drop.
+- **CI on every push.** GitHub Actions runs the backend suite and the frontend lint and build in parallel, and cancels superseded runs.
+- **Deterministic external services.** Tests use fakes for the LLM and WhatsApp, and a throwaway SQLite file, so the suite needs no credentials and gives the same result every run.
+- **Human in the loop.** Generated quizzes and exercises go through an admin review screen before members see them.
+- **Startup checks.** The API checks its configuration at boot and refuses to start half-configured.

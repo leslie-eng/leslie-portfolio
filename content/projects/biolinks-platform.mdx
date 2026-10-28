@@ -1,0 +1,56 @@
+---
+title: Biolinks — production platform for a client
+order: 3
+discipline: Full-stack · Contract · In production
+problem: A Kenyan biopharma supplier was running its catalogue, sales and finances on spreadsheets.
+outcome: Shipped 1 live production system covering 6 back-office modules, backed by 16 backend test modules.
+role: Contract engineer — architecture, backend, frontend and deployment
+tags: [FastAPI, PostgreSQL 17, React, TypeScript, Alembic]
+stack:
+  - React 18 + TypeScript + Vite
+  - FastAPI + SQLAlchemy 2
+  - Alembic migrations
+  - PostgreSQL 17
+  - PyJWT + bcrypt
+  - Vercel (web) + Render (API)
+links:
+  live: https://biopharmlifescience.co.ke
+  repo: https://github.com/leslie-eng/biopharmlifescience
+results:
+  - { label: "Status", value: "Live at biopharmlifescience.co.ke" }
+  - { label: "Back-office modules", value: "6 — products, POS, orders, clients, finances, reports" }
+  - { label: "Backend test modules", value: "16 (pytest)" }
+  - { label: "Deploy targets", value: "2 — static SPA on Vercel, API on Render" }
+next:
+  - Run the pytest and Vitest suites in GitHub Actions on every push.
+  - Add a nightly export of orders and POS sales into an analytics schema, so reporting queries stop hitting the production tables.
+  - Add uptime and error-rate monitoring on the API.
+diagram:
+  nodes:
+    - { id: users, label: "Customers & staff", sub: "browser", col: 0, row: 0.5 }
+    - { id: spa, label: "React SPA", sub: "Vercel", col: 1, row: 0.5 }
+    - { id: api, label: "FastAPI", sub: "Render · JWT roles", col: 2, row: 0.5 }
+    - { id: pg, label: "PostgreSQL 17", sub: "Alembic-managed", col: 3, row: 0 }
+    - { id: disk, label: "Uploads disk", sub: "product images", col: 3, row: 1 }
+  edges:
+    - { from: users, to: spa }
+    - { from: spa, to: api }
+    - { from: api, to: pg }
+    - { from: api, to: disk }
+---
+
+## Approach
+
+A contract engagement, delivered end to end. Off-the-shelf storefronts couldn't model how the business actually sells, and a spreadsheet "system" was holding everything together.
+
+- **Architecture that fits the budget.** A React + Vite SPA on Vercel, a FastAPI API on Render, and PostgreSQL 17 as the single source of truth. Boring, cheap, and fully owned by the client.
+- **Public site.** Product catalogue, the Dhibiti model, an Akiba savings calculator, a facility assessment and a chatbot entry point — built to be credible to medical customers.
+- **Staff back-office.** Products, point of sale, orders, clients, finances and reports — the screens staff use every day, behind JWT auth with roles and bcrypt-hashed credentials.
+- **Production discipline.** Schema changes go through versioned Alembic migrations. The web app and API deploy separately, and product images live on a dedicated uploads disk.
+
+## Data quality & testing
+
+- **16 backend test modules (pytest)** covering access control, auth, password changes, POS sales, the storefront, rate limits, security headers, the error envelope and startup checks.
+- **Migration tests.** A dedicated test applies the Alembic migrations, so a schema change that would break production fails locally first.
+- **Frontend tests.** Vitest covers the HTTP service layer, with an end-to-end test setup alongside it.
+- **Database-enforced integrity.** PostgreSQL constraints and SQLAlchemy 2 models keep the data consistent, not just the UI.

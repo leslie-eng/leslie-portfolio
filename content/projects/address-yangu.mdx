@@ -1,0 +1,53 @@
+---
+title: Address Yangu — vacancy device + platform
+order: 4
+discipline: Embedded + full-stack · Founder
+problem: Rental vacancies in Nairobi go unlisted, so tenants pay agents just to find out which units are free.
+outcome: Field device runs 8 FreeRTOS tasks with an ~8 s hardware watchdog and an offline queue that replays every event after LTE loss.
+role: Founder, Kinetic Kraft Robotics — firmware, backend, frontend and field deployment
+tags: [STM32 · FreeRTOS, C++17, FastAPI, React PWA, LTE]
+stack:
+  - STM32F407 + FreeRTOS (C++17)
+  - SIMCom A7670E LTE · u-blox GPS
+  - FastAPI
+  - React (Vite) PWA
+  - Leaflet / OpenStreetMap
+  - "Production: PostGIS, Africa's Talking SMS/USSD, M-Pesa Daraja"
+links:
+  repo: https://github.com/leslie-eng/address_yangu_version_2
+results:
+  - { label: "Firmware tasks", value: "8 FreeRTOS tasks, 3 queues, 1 mutex" }
+  - { label: "Device heartbeat", value: "Every 5 min — battery, signal, solar" }
+  - { label: "Hardware watchdog", value: "~8 s reset if any task stalls" }
+  - { label: "LTE outage handling", value: "EEPROM queue, replayed every 60 s" }
+next:
+  - Stream device heartbeats into a time-series table and build an occupancy dataset per building and area.
+  - Publish field-installation photos and per-building uptime.
+  - Open-source the firmware host simulator as a standalone test harness.
+diagram:
+  nodes:
+    - { id: dev, label: "AY-NVD2 device", sub: "STM32 · FreeRTOS", col: 0, row: 0.5 }
+    - { id: api, label: "FastAPI", sub: "device + vacancy API", col: 1, row: 0.5 }
+    - { id: db, label: "PostgreSQL", sub: "PostGIS in production", col: 2, row: 0 }
+    - { id: pwa, label: "React PWA", sub: "tenants & caretakers", col: 2, row: 1 }
+  edges:
+    - { from: dev, to: api, label: "LTE · HTTPS" }
+    - { from: api, to: db }
+    - { from: api, to: pwa }
+---
+
+## Approach
+
+I founded **Kinetic Kraft Robotics** to build the whole loop: a device on the building, a platform in the middle, and a tenant on the other end.
+
+- **The device.** The AY-NVD2 gate unit runs on an STM32F407 with FreeRTOS: a touch display, LTE modem, GPS, EEPROM and real-time clock. Eight tasks with fixed priorities talk over three queues. A single modem task owns the LTE link and posts HTTPS requests in order.
+- **The platform.** A React PWA with phone and OTP login. Tenants search by unit type, price and area — or by current location, sorted by walking distance on an OpenStreetMap map. Caretaker contacts are revealed only after a token unlock.
+- **The caretaker side.** Vacancy management for the person who actually knows: mark units open or occupied and keep the listing honest at the source.
+- **The demo build.** The public repo is a trimmed, runnable version of production (mocked OTP, no paid map keys). Production adds PostGIS spatial queries, SMS/USSD via Africa's Talking, M-Pesa payments and the device integration.
+
+## Data quality & testing
+
+- **Host-side test suite.** The firmware core compiles for both the target and a desktop host. A FreeRTOS shim and a mock hardware layer run the verification suite and a full-system simulation with `make host`, with no board needed.
+- **Two-layer watchdog.** Every task checks in against its own deadline. The supervisor refreshes the hardware watchdog only when all of them have, so one stalled task forces a clean reset within ~8 s.
+- **No lost events.** When LTE drops, requests are written to an EEPROM ring queue and replayed when the link returns.
+- **Debounced input.** Physical buttons and touch both require a 300 ms hold, so stray presses don't flip a unit's status.

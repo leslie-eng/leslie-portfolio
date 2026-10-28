@@ -1,0 +1,65 @@
+---
+title: Retail Medallion Warehouse
+order: 2
+discipline: Data engineering · Batch & warehousing
+problem: Nine raw e-commerce CSVs had to become a warehouse analysts can query without cleaning anything themselves.
+outcome: Modelled 9 raw CSVs (~1M geolocation rows) into a 112,650-row order-item fact table and 3 conformed dimensions.
+role: Sole engineer — ingestion, modelling and orchestration
+tags: [Apache Airflow 3, PostgreSQL, MinIO (S3), pandas, Kimball modelling]
+stack:
+  - Apache Airflow 3 (LocalExecutor)
+  - PostgreSQL 16
+  - MinIO (S3-compatible)
+  - Python — pandas, PL/pgSQL
+  - Docker Compose
+  - Kimball / snowflake schema
+links:
+  repo: https://github.com/leslie-eng/medallion-arch-pipeline
+results:
+  - { label: "Source files", value: "9 CSVs (Olist e-commerce)" }
+  - { label: "fact_orders", value: "112,650 rows — one per order item" }
+  - { label: "dim_customer", value: "99,441 rows" }
+  - { label: "dim_products", value: "34,448 rows (product × seller)" }
+  - { label: "dim_sellers", value: "3,095 rows" }
+  - { label: "Load chunk size", value: "20,000 rows — flat memory on ~1M-row files" }
+  - { label: "DAG", value: "7 tasks, @daily, 5 retries" }
+next:
+  - Turn the ad-hoc SQL checks into dbt tests or Great Expectations suites that fail the DAG run.
+  - Replace the full bronze reload with incremental, partitioned loads keyed on file date.
+  - Port the target from local PostgreSQL to S3 + Redshift (or Athena) to match the production AWS setup.
+  - Add freshness and row-count alerts so a silent upstream change pages someone.
+diagram:
+  nodes:
+    - { id: s3, label: "MinIO (S3)", sub: "data/*.csv", col: 0, row: 0 }
+    - { id: bronze, label: "Bronze", sub: "raw, full reload", col: 1, row: 0 }
+    - { id: silver, label: "Silver", sub: "typed & cleaned", col: 2, row: 0 }
+    - { id: gold, label: "Gold", sub: "fact + 3 dims (views)", col: 3, row: 0 }
+    - { id: bi, label: "SQL / BI", sub: "analysts", col: 4, row: 0 }
+    - { id: archive, label: "archive/", sub: "processed files", col: 0, row: 1 }
+    - { id: af, label: "Airflow 3 DAG", sub: "7 tasks · @daily", col: 2, row: 1 }
+  edges:
+    - { from: s3, to: bronze }
+    - { from: bronze, to: silver }
+    - { from: silver, to: gold }
+    - { from: gold, to: bi }
+    - { from: s3, to: archive }
+    - { from: af, to: silver }
+---
+
+## Approach
+
+Raw e-commerce data — orders, items, customers, payments, reviews, geolocation — is only useful once it is typed, de-duplicated and modelled. The [Olist Brazilian e-commerce dataset](https://www.kaggle.com/datasets/olistbr/brazilian-ecommerce) is a realistic stand-in: nine files with the usual problems.
+
+- **Bronze — land it raw.** An Airflow task lists every CSV in the MinIO bucket and streams each into its own bronze table in 20,000-row chunks with pandas. Memory stays flat even on the ~1M-row geolocation file. Nothing is cleaned here; bronze is the audit trail.
+- **Silver — clean and type it.** A PL/pgSQL procedure reloads silver from bronze: lifecycle text columns become real timestamps, city names are standardised, and category and payment labels are normalised.
+- **Gold — model it.** A snowflake schema built as views: `fact_orders` at order-item grain, plus customer, product and seller dimensions with surrogate keys. Because gold is views, it always reflects the latest silver load.
+- **Orchestrate it.** One seven-task DAG: check for new files → register procedures → bronze → load → silver → gold → archive. It runs daily and can be restarted from any task.
+
+## Data quality & testing
+
+- **Guard against empty runs.** A `ShortCircuitOperator` skips the whole run when the landing prefix has no CSVs, so an empty bucket can never wipe the warehouse.
+- **No double loads.** Files are moved to `archive/` only after a successful load, so the same file is never ingested twice.
+- **Idempotent layers.** Bronze is dropped and recreated each run; silver is truncated and reloaded. Rerunning a day produces the same tables.
+- **Grain checks.** Geolocation has many rows per zip prefix, so it is averaged to one point per prefix before joining. Joining it raw would duplicate customers and sellers.
+- **No double counting.** Payments are recorded per order, so they are allocated across order items by item value. `SUM(payment_value)` on the fact table matches order totals. The 775 orders with no items are documented and excluded.
+- **Profiling queries.** The SQL checks in `tests/` cover duplicate keys, row counts, the 27 expected states, and timestamp ordering (approval before purchase, answer before review). They are run by hand today; automating them is the first item below.

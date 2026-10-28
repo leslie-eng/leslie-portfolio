@@ -1,30 +1,41 @@
 import { defineCollection, z } from "astro:content";
 import { glob } from "astro/loaders";
 
-// Featured Projects: one markdown file per Case Study. The schema enforces the
-// Case Study format (problem → approach → stack → outcome) plus Evidence, and
-// the order field fixes gallery position (Flagship is order 1).
+// One .mdx per Featured Project. Frontmatter feeds the home-page card and the
+// case-study chrome (TL;DR, architecture, results, links); the MDX body holds
+// the prose sections (Approach, Data quality & testing, What I'd do next).
+const node = z.object({
+  id: z.string(),
+  label: z.string(),
+  sub: z.string().optional(),
+  col: z.number().int().min(0),
+  row: z.number().min(0).default(0),
+});
+
 const projects = defineCollection({
-  loader: glob({ pattern: "*.md", base: "./src/projects" }),
+  loader: glob({ pattern: "*.mdx", base: "./content/projects" }),
   schema: z.object({
     title: z.string(),
     order: z.number().int().min(1),
-    summary: z.string().max(200),
-    discipline: z.string().default("DATA ENGINEERING"),
-    impact: z.string().max(220).optional(),
+    discipline: z.string(),
+    problem: z.string().max(160),
+    // Every outcome must contain a number.
+    outcome: z.string().max(200).regex(/\d/, "Outcome must contain a number"),
+    role: z.string(),
+    tags: z.array(z.string()).min(4).max(5),
     stack: z.array(z.string()),
-    // Evidence that the work is real. At least one entry per Case Study;
-    // kind "photos" may be pending while images are awaited.
-    evidence: z
-      .array(
-        z.object({
-          kind: z.enum(["repo", "live", "photos"]),
-          label: z.string(),
-          url: z.string().url().optional(),
-          pending: z.boolean().default(false),
-        })
-      )
-      .min(1),
+    links: z.object({
+      repo: z.string().url().optional(),
+      live: z.string().url().optional(),
+    }),
+    results: z.array(z.object({ label: z.string(), value: z.string() })).default([]),
+    next: z.array(z.string()).min(1),
+    diagram: z.object({
+      nodes: z.array(node).min(2),
+      edges: z.array(
+        z.object({ from: z.string(), to: z.string(), label: z.string().optional() })
+      ),
+    }),
   }),
 });
 

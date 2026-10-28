@@ -1,0 +1,105 @@
+---
+// Renders a project's architecture (frontmatter `diagram`) as inline SVG.
+// Nodes sit on a col/row grid; edges are drawn box-edge to box-edge. Colours
+// come from CSS variables, so the diagram follows the light/dark theme.
+import type { CollectionEntry } from "astro:content";
+
+type Diagram = CollectionEntry<"projects">["data"]["diagram"];
+
+interface Props {
+  diagram: Diagram;
+  title: string;
+  /** Thumbnail mode: no sub-labels, purely decorative. */
+  compact?: boolean;
+}
+
+const { diagram, title, compact = false } = Astro.props;
+
+const W = 156;
+const H = compact ? 46 : 60;
+const GAP_X = compact ? 30 : 44;
+const GAP_Y = compact ? 22 : 30;
+const PAD = 14;
+
+const cols = Math.max(...diagram.nodes.map((n) => n.col)) + 1;
+const rows = Math.max(...diagram.nodes.map((n) => n.row)) + 1;
+const width = PAD * 2 + cols * W + (cols - 1) * GAP_X;
+const height = PAD * 2 + rows * H + (rows - 1) * GAP_Y;
+
+const pos = new Map(
+  diagram.nodes.map((n) => [
+    n.id,
+    { ...n, x: PAD + n.col * (W + GAP_X), y: PAD + n.row * (H + GAP_Y) },
+  ])
+);
+
+const edges = diagram.edges.flatMap((e) => {
+  const a = pos.get(e.from);
+  const b = pos.get(e.to);
+  if (!a || !b) return [];
+  let d: string;
+  let mid: { x: number; y: number };
+  if (a.col === b.col) {
+    // vertical, in either direction
+    const down = b.y > a.y;
+    const x = a.x + W / 2;
+    const y1 = down ? a.y + H : a.y;
+    const y2 = down ? b.y : b.y + H;
+    d = `M${x},${y1} L${x},${y2}`;
+    mid = { x, y: (y1 + y2) / 2 };
+  } else {
+    const fwd = b.col > a.col;
+    const x1 = fwd ? a.x + W : a.x;
+    const x2 = fwd ? b.x : b.x + W;
+    const y1 = a.y + H / 2;
+    const y2 = b.y + H / 2;
+    const c = (x2 - x1) / 2;
+    d = y1 === y2 ? `M${x1},${y1} L${x2},${y2}` : `M${x1},${y1} C${x1 + c},${y1} ${x2 - c},${y2} ${x2},${y2}`;
+    mid = { x: (x1 + x2) / 2, y: (y1 + y2) / 2 };
+  }
+  return [{ d, mid, label: e.label }];
+});
+
+const markerId = `arrow-${title.replace(/\W+/g, "").slice(0, 24)}-${compact ? "c" : "f"}`;
+const summary = `Architecture of ${title}: ` + diagram.edges.map((e) => `${pos.get(e.from)?.label} to ${pos.get(e.to)?.label}`).join("; ") + ".";
+---
+
+<svg
+  viewBox={`0 0 ${width} ${height}`}
+  class="block h-auto w-full"
+  role={compact ? undefined : "img"}
+  aria-hidden={compact ? "true" : undefined}
+  aria-label={compact ? undefined : summary}
+  font-family="Inter Variable, ui-sans-serif, system-ui, sans-serif"
+>
+  <defs>
+    <marker id={markerId} viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="var(--accent)" />
+    </marker>
+  </defs>
+
+  {edges.map((e) => (
+    <path d={e.d} fill="none" stroke="var(--accent)" stroke-width="1.75" stroke-opacity="0.85" marker-end={`url(#${markerId})`} />
+  ))}
+
+  {[...pos.values()].map((n) => (
+    <g>
+      <rect x={n.x} y={n.y} width={W} height={H} rx="8" fill="var(--surface-2)" stroke="var(--line-strong)" stroke-width="1.25" />
+      {compact || !n.sub ? (
+        <text x={n.x + W / 2} y={n.y + H / 2 + 5} text-anchor="middle" font-size="15" font-weight="600" fill="var(--fg)">{n.label}</text>
+      ) : (
+        <>
+          <text x={n.x + W / 2} y={n.y + 25} text-anchor="middle" font-size="14.5" font-weight="600" fill="var(--fg)">{n.label}</text>
+          <text x={n.x + W / 2} y={n.y + 44} text-anchor="middle" font-size="11.5" fill="var(--muted)" font-family="JetBrains Mono Variable, ui-monospace, monospace">{n.sub}</text>
+        </>
+      )}
+    </g>
+  ))}
+
+  {!compact && edges.filter((e) => e.label).map((e) => (
+    <g>
+      <rect x={e.mid.x - 40} y={e.mid.y - 19} width="80" height="16" rx="3" fill="var(--bg)" />
+      <text x={e.mid.x} y={e.mid.y - 7} text-anchor="middle" font-size="10.5" fill="var(--muted)" font-family="JetBrains Mono Variable, ui-monospace, monospace">{e.label}</text>
+    </g>
+  ))}
+</svg>
