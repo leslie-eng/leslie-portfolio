@@ -57,6 +57,7 @@ const person = {
         try { t = localStorage.getItem("theme"); } catch {}
         if (t !== "light" && t !== "dark") t = matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark";
         document.documentElement.dataset.theme = t;
+        document.documentElement.classList.add("js");
       })();
     </script>
 
@@ -90,16 +91,19 @@ const person = {
       Skip to content
     </a>
 
-    <header class="sticky top-0 z-40 border-b border-line bg-bg/90 backdrop-blur">
+    <div id="progress" class="fixed inset-x-0 top-0 z-50 h-0.5 origin-left bg-accent-fill" style="transform: scaleX(0)" aria-hidden="true"></div>
+
+    <header id="site-header" class="site-header sticky top-0 z-40 border-b">
       <div class="container-page flex h-16 items-center justify-between gap-4">
         <a href="/" class="flex items-center gap-2.5 font-semibold">
           <span class="grid size-8 place-items-center rounded-md bg-accent-fill font-mono text-sm font-bold text-accent-ink" aria-hidden="true">LA</span>
           <span>{profile.name}</span>
         </a>
-        <nav aria-label="Main" class="hidden md:block">
+        <nav aria-label="Main" class="relative hidden md:block" data-nav>
           <ul class="flex items-center gap-6 text-sm text-muted">
-            {nav.map((n) => <li><a href={n.href} class="hover:text-fg">{n.label}</a></li>)}
+            {nav.map((n) => <li><a href={n.href} class="nav-link">{n.label}</a></li>)}
           </ul>
+          <span id="nav-ind" class="nav-ind" aria-hidden="true"></span>
         </nav>
         <div class="flex items-center gap-2">
           <a href={resume.href} class="hidden rounded-lg border border-line-strong px-3 py-1.5 text-sm font-semibold hover:border-accent hover:text-accent sm:inline-flex" download>Résumé</a>
@@ -109,9 +113,9 @@ const person = {
           </button>
         </div>
       </div>
-      <nav aria-label="Sections" class="border-t border-line md:hidden">
+      <nav aria-label="Sections" class="border-t border-line md:hidden" data-nav>
         <ul class="container-page flex gap-5 overflow-x-auto py-2.5 text-sm whitespace-nowrap text-muted">
-          {nav.map((n) => <li><a href={n.href} class="hover:text-fg">{n.label}</a></li>)}
+          {nav.map((n) => <li><a href={n.href} class="nav-link">{n.label}</a></li>)}
         </ul>
       </nav>
     </header>
@@ -133,6 +137,8 @@ const person = {
     </footer>
 
     <script>
+      import "../scripts/motion";
+
       const btn = document.getElementById("theme-toggle")!;
       const root = document.documentElement;
       const sync = () => {

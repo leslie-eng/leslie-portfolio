@@ -11,36 +11,36 @@ const dates = (j: (typeof experience)[number]) =>
 
 <Base title={site.title}>
   <!-- Hero -->
-  <section class="container-page pt-10 pb-16 sm:pt-20 sm:pb-24" aria-labelledby="hero-name">
-    <p class="inline-flex items-center gap-2 rounded-lg border border-line bg-surface px-3 py-1 text-sm text-muted">
-      <span class="size-2 rounded-full bg-accent-fill" aria-hidden="true"></span>
+  <section id="top" class="container-page pt-10 pb-16 sm:pt-20 sm:pb-24" aria-labelledby="hero-name">
+    <p class="reveal inline-flex items-center gap-2 rounded-lg border border-line bg-surface px-3 py-1 text-sm text-muted">
+      <span class="size-2 animate-pulse rounded-full bg-accent-fill" aria-hidden="true"></span>
       {profile.availability}
     </p>
-    <h1 id="hero-name" class="mt-6 text-4xl font-bold sm:text-6xl">{profile.name}</h1>
-    <p class="mt-3 max-w-3xl text-xl font-semibold text-accent sm:text-2xl">{profile.title}</p>
-    <p class="mt-5 max-w-2xl text-lg text-muted">{profile.value.join(" ")}</p>
-    <ul class="mt-6 flex flex-wrap gap-2" aria-label="Highlights">
+    <h1 id="hero-name" style="--d:80ms" class="reveal mt-6 text-4xl font-bold sm:text-6xl">{profile.name}</h1>
+    <p style="--d:160ms" class="reveal mt-3 max-w-3xl text-xl font-semibold text-accent sm:text-2xl">{profile.title}</p>
+    <p style="--d:240ms" class="reveal mt-5 max-w-2xl text-lg text-muted">{profile.value.join(" ")}</p>
+    <ul style="--d:320ms" class="reveal mt-6 flex flex-wrap gap-2" aria-label="Highlights">
       {profile.proof.map((p) => (
         <li class="rounded-md border border-line bg-surface px-3 py-1.5 font-mono text-sm">{p}</li>
       ))}
     </ul>
-    <div class="mt-8 flex flex-wrap gap-3">
+    <div style="--d:400ms" class="reveal mt-8 flex flex-wrap gap-3">
       <a href="#projects" class="btn-primary">View projects</a>
       <a href={resume.href} class="btn-secondary" download>
         Download résumé
         <span class="font-mono text-xs font-normal text-muted">PDF</span>
       </a>
     </div>
-    <p class="mt-3 text-sm text-muted">Résumé updated {resume.updated}</p>
+    <p style="--d:400ms" class="reveal mt-3 text-sm text-muted">Résumé updated {resume.updated}</p>
   </section>
 
   <!-- Projects -->
   <section id="projects" class="section" aria-labelledby="projects-title">
     <div class="container-page">
-      <h2 id="projects-title" class="section-title">Projects</h2>
-      <p class="mt-2 max-w-2xl text-muted">Data engineering first. Each one links to a case study with the architecture, testing approach and results.</p>
+      <h2 id="projects-title" class="reveal section-title">Projects</h2>
+      <p style="--d:80ms" class="reveal mt-2 max-w-2xl text-muted">Data engineering first. Each one links to a case study with the architecture, testing approach and results.</p>
       <div class="mt-10 grid gap-6">
-        {projects.map((p) => <ProjectCard project={p} />)}
+        {projects.map((p) => <div class="reveal"><ProjectCard project={p} /></div>)}
       </div>
     </div>
   </section>
@@ -48,32 +48,35 @@ const dates = (j: (typeof experience)[number]) =>
   <!-- Experience -->
   <section id="experience" class="section" aria-labelledby="experience-title">
     <div class="container-page">
-      <h2 id="experience-title" class="section-title">Experience</h2>
-      <ol class="mt-10 space-y-10 border-l border-line pl-6 sm:pl-8">
-        {experience.map((j) => (
-          <li class="relative">
-            <span class="absolute top-2 -left-[1.85rem] size-3 rounded-full border-2 border-accent bg-bg sm:-left-[2.35rem]" aria-hidden="true"></span>
-            <div class="flex flex-col gap-1 sm:flex-row sm:items-baseline sm:justify-between sm:gap-6">
-              <h3 class="text-lg font-semibold">
-                {j.role} <span class="text-muted">· {j.company}</span>
-              </h3>
-              {dates(j) && <p class="label shrink-0">{dates(j)}</p>}
-            </div>
-            <ul class="mt-3 max-w-3xl list-disc space-y-2 pl-5 text-muted marker:text-accent">
-              {j.bullets.map((b) => <li>{b}</li>)}
-            </ul>
-          </li>
-        ))}
-      </ol>
+      <h2 id="experience-title" class="reveal section-title">Experience</h2>
+      <div id="timeline" class="relative mt-10">
+        <span id="tl-fill" class="absolute top-0 -left-px h-full w-0.5 origin-top bg-accent-fill" style="transform: scaleY(0)" aria-hidden="true"></span>
+        <ol class="space-y-10 border-l border-line pl-6 sm:pl-8">
+          {experience.map((j) => (
+            <li class="reveal relative">
+              <span class="tl-dot absolute top-2 -left-[1.85rem] size-3 rounded-full border-2 border-accent sm:-left-[2.35rem]" aria-hidden="true"></span>
+              <div class="flex flex-col gap-1 sm:flex-row sm:items-baseline sm:justify-between sm:gap-6">
+                <h3 class="text-lg font-semibold">
+                  {j.role} <span class="text-muted">· {j.company}</span>
+                </h3>
+                {dates(j) && <p class="label shrink-0">{dates(j)}</p>}
+              </div>
+              <ul class="mt-3 max-w-3xl list-disc space-y-2 pl-5 text-muted marker:text-accent">
+                {j.bullets.map((b) => <li>{b}</li>)}
+              </ul>
+            </li>
+          ))}
+        </ol>
+      </div>
     </div>
   </section>
 
   <!-- Skills -->
   <section id="skills" class="section" aria-labelledby="skills-title">
     <div class="container-page">
-      <h2 id="skills-title" class="section-title">Skills</h2>
+      <h2 id="skills-title" class="reveal section-title">Skills</h2>
       <div class="mt-10 grid gap-6 lg:grid-cols-[1.4fr_1fr]">
-        <div class="rounded-2xl border border-accent/40 bg-surface p-6 sm:p-8">
+        <div class="reveal rounded-2xl border border-accent/40 bg-surface p-6 sm:p-8">
           <h3 class="text-xl font-bold">{skills.primary.name}</h3>
           <ul class="mt-5 flex flex-wrap gap-2.5">
             {skills.primary.items.map((s) => (
@@ -81,14 +84,14 @@ const dates = (j: (typeof experience)[number]) =>
             ))}
           </ul>
         </div>
-        <div class="rounded-2xl border border-line bg-surface p-6 sm:p-8">
+        <div style="--d:120ms" class="reveal rounded-2xl border border-line bg-surface p-6 sm:p-8">
           <h3 class="text-lg font-semibold">{skills.secondary.name}</h3>
           <ul class="mt-4 flex flex-wrap gap-2">
             {skills.secondary.items.map((s) => <li class="rounded-lg border border-line bg-surface-2 px-3 py-1.5 text-sm">{s}</li>)}
           </ul>
         </div>
       </div>
-      <p class="mt-6 text-muted">
+      <p class="reveal mt-6 text-muted">
         <span class="font-semibold text-fg">{skills.range.name}:</span> {skills.range.line}
       </p>
     </div>
@@ -97,10 +100,10 @@ const dates = (j: (typeof experience)[number]) =>
   <!-- Certifications -->
   <section id="certifications" class="section" aria-labelledby="certs-title">
     <div class="container-page">
-      <h2 id="certs-title" class="section-title">Certifications</h2>
+      <h2 id="certs-title" class="reveal section-title">Certifications</h2>
       <ul class="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {certifications.completed.map((c) => (
-          <li class="flex flex-col rounded-2xl border border-line bg-surface p-6">
+        {certifications.completed.map((c, i) => (
+          <li style={`--d:${(i % 3) * 90}ms`} class="reveal flex flex-col rounded-2xl border border-line bg-surface p-6">
             <h3 class="font-semibold">{c.name}</h3>
             <p class="mt-1 text-muted">{c.issuer}{c.year && ` · ${c.year}`}</p>
             {c.verify && (
@@ -111,7 +114,7 @@ const dates = (j: (typeof experience)[number]) =>
           </li>
         ))}
       </ul>
-      <p class="mt-6 text-muted">
+      <p class="reveal mt-6 text-muted">
         <span class="font-semibold text-fg">In progress:</span> {certifications.inProgress.join(" · ")}
       </p>
     </div>
@@ -121,12 +124,12 @@ const dates = (j: (typeof experience)[number]) =>
   <section id="about" class="section" aria-labelledby="about-title">
     <div class="container-page grid gap-8 lg:grid-cols-[1.4fr_1fr]">
       <div>
-        <h2 id="about-title" class="section-title">About</h2>
-        <div class="mt-6 max-w-2xl space-y-4 text-lg text-muted">
+        <h2 id="about-title" class="reveal section-title">About</h2>
+        <div style="--d:80ms" class="reveal mt-6 max-w-2xl space-y-4 text-lg text-muted">
           {about.map((p) => <p>{p}</p>)}
         </div>
       </div>
-      <dl class="grid content-start gap-4 rounded-2xl border border-line bg-surface p-6 text-base">
+      <dl style="--d:160ms" class="reveal grid content-start gap-4 rounded-2xl border border-line bg-surface p-6 text-base">
         <div><dt class="label">Based in</dt><dd class="mt-1">{profile.location}</dd></div>
         <div><dt class="label">Education</dt><dd class="mt-1">{profile.education.degree}, {profile.education.school}</dd></div>
         <div><dt class="label">Founder</dt><dd class="mt-1">Kinetic Kraft Robotics</dd></div>
@@ -138,11 +141,11 @@ const dates = (j: (typeof experience)[number]) =>
   <!-- Contact -->
   <section id="contact" class="section" aria-labelledby="contact-title">
     <div class="container-page">
-      <h2 id="contact-title" class="section-title">Contact</h2>
-      <p class="mt-2 max-w-2xl text-lg text-muted">
+      <h2 id="contact-title" class="reveal section-title">Contact</h2>
+      <p style="--d:80ms" class="reveal mt-2 max-w-2xl text-lg text-muted">
         Hiring for a data engineering role? Email is the fastest way to reach me.
       </p>
-      <div class="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
+      <div style="--d:160ms" class="reveal mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
         <div class="flex items-stretch overflow-hidden rounded-lg border border-line-strong">
           <a href={`mailto:${profile.email}`} class="flex items-center px-4 py-2.5 font-mono text-base hover:text-accent">{profile.email}</a>
           <button

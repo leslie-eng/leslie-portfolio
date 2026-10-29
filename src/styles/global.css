@@ -140,3 +140,101 @@
     @apply rounded bg-surface-2 px-1.5 py-0.5 font-mono text-[0.85em] text-fg;
   }
 }
+
+/* ---------- Motion ----------
+   Hidden start states only apply when JS is running (.js on <html>) and the
+   visitor hasn't asked for reduced motion, so content is never stuck invisible. */
+
+@layer components {
+  .site-header {
+    @apply border-line bg-bg/90 backdrop-blur;
+    transition: background-color 0.3s, border-color 0.3s, box-shadow 0.3s;
+  }
+  .js .site-header:not(.is-scrolled) {
+    @apply border-transparent bg-bg backdrop-blur-none;
+  }
+  .site-header.is-scrolled {
+    box-shadow: 0 8px 24px -16px rgb(0 0 0 / 0.5);
+  }
+
+  .nav-link {
+    @apply transition-colors hover:text-fg;
+  }
+  .nav-link.is-active {
+    @apply text-fg;
+  }
+  .nav-ind {
+    @apply pointer-events-none absolute -bottom-2 left-0 h-0.5 w-0 rounded-full bg-accent-fill opacity-0;
+    transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1), width 0.35s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.2s;
+  }
+
+  .tl-dot {
+    background-color: var(--bg);
+    transition: background-color 0.3s, box-shadow 0.3s;
+  }
+  .tl-dot.on {
+    @apply bg-accent-fill;
+    box-shadow: 0 0 0 4px var(--accent-soft);
+  }
+}
+
+/* Packets only exist as motion; static diagrams don't show them. */
+.arch-packet {
+  display: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .js .reveal {
+    opacity: 0;
+    transform: translateY(18px);
+    transition: opacity 0.7s cubic-bezier(0.2, 0.7, 0.2, 1), transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1);
+    transition-delay: var(--d, 0ms);
+  }
+  .js .reveal.in {
+    opacity: 1;
+    transform: none;
+  }
+
+  /* Architecture diagrams: nodes rise in column by column, then edges draw. */
+  .js .arch .arch-node {
+    opacity: 0;
+    transform: translateY(6px);
+    transition: opacity 0.45s ease-out, transform 0.45s ease-out;
+    transition-delay: calc(var(--i) * 140ms);
+  }
+  .js .arch .arch-edge {
+    opacity: 0;
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+    transition: stroke-dashoffset 0.5s ease-in-out, opacity 0.15s;
+    transition-delay: calc(var(--i) * 140ms - 60ms);
+  }
+  .js .arch.in .arch-node {
+    opacity: 1;
+    transform: none;
+  }
+  .js .arch.in .arch-edge {
+    opacity: 1;
+    stroke-dashoffset: 0;
+  }
+
+  /* A data packet travels each edge, upstream edges first. */
+  .arch-packet {
+    display: inline;
+    stroke-dasharray: 0 2;
+    animation: arch-packet 2.8s linear infinite;
+    animation-delay: calc(var(--i) * 0.35s + 0.9s);
+    animation-fill-mode: backwards;
+    animation-play-state: paused;
+  }
+  .arch.in.live .arch-packet {
+    animation-play-state: running;
+  }
+}
+
+@keyframes arch-packet {
+  0% { stroke-dashoffset: 0; opacity: 0; }
+  8% { opacity: 1; }
+  45% { stroke-dashoffset: -1; opacity: 1; }
+  50%, 100% { stroke-dashoffset: -1; opacity: 0; }
+}
